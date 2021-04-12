@@ -26,8 +26,7 @@ const tripEventsList = tripEvents.querySelector('.trip-events__list');
 render(tripEventsList, createEditForm(), 'beforeend');
 
 for (let i=0; i < TRIP_POINTS; i++) {
-  render(tripEvents, createTripEventsPoint(), 'beforeend');
+  render(tripEventsList, createTripEventsPoint(), 'beforeend');
 }
 
-// следует ли выделить стоимость поездки в отдельный компонент?
-// ???  форма создания / формы редактирования - ???
+// делаем два отдельных компонента: и для создания формы и для редактирования формы
