@@ -7,6 +7,9 @@ import {createTripEventsList} from './view/events-list.js';
 import {createEditForm} from './view/edit-form.js';
 import {createTripEventsPoint} from './view/events-point.js';
 
+//import {generatePoint} from './mock/mock-point.js';
+import './mock/mock-point.js';
+
 
 const TRIP_POINTS = 3;
 
@@ -30,3 +33,7 @@ for (let i=0; i < TRIP_POINTS; i++) {
 }
 
 // делаем два отдельных компонента: и для создания формы и для редактирования формы
+
+//generatePoint();
+
+
