@@ -35,5 +35,27 @@ const getRandomElement = (array) => {
 };
 
 
-export {render, getRandomInteger, getRandomElement};
+/**
+* Функция перемешивания данных в массиве
+* @param {array} arr — массив данных
+* @return {array} — итоговый массив
+*/
+const getShuffled = (arr) => arr.sort(() => {
+  return Math.random() - 0.5;
+});
+
+
+/**
+ * Функция получения массива произвольной длины
+ * с перемешиванием элементов в массиве
+ * @param {array} source — массив данных
+ * @param {number} maxLength — длина массива
+ */
+const generateNewArr = ([...source], maxLength) => Array.from(
+  { length: Math.min(source.length, 1 + Math.random() * maxLength | 0) },
+  () => source.splice(Math.random() * source.length | 0, 1)[0],
+);
+
+
+export {render, getRandomInteger, getRandomElement, generateNewArr, getShuffled};
 

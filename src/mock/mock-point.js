@@ -1,4 +1,4 @@
-import { getRandomElement, getRandomInteger } from '../util.js';
+import { getRandomElement, getRandomInteger, generateNewArr, getShuffled} from '../util.js';
 
 import dayjs from 'dayjs';
 
@@ -49,15 +49,6 @@ const OFFERS = [
   },
 ];
 
-/**
-* Функция перемешивания данных в массиве
-* @param {array} arr — массив данных
-* @return {array} — итоговый массив
-*/
-const getShuffled = (arr) => arr.sort(() => {
-  return Math.random() - 0.5;
-});
-
 
 /**
  * Функция, возвращающая случайный набор фотографий
@@ -70,8 +61,9 @@ const generatePhotos = () => {
 
 
 /**
- * Функция генерации случайной даты
- * @return {object} — случайная дата
+ * Функция, возвращающая случайную дату
+ * (в заданном диапазоне)
+ * @return {number} — случайная дата
  */
 const generateDate = () => {
   const maxDaysGap = 7;
@@ -86,12 +78,10 @@ const generateDate = () => {
 // нужно ли использовать библиотеку flatpickr.js?  где?
 
 
-const generateNewArr = ([...source], maxLength) => Array.from(
-  { length: Math.min(source.length, 1 + Math.random() * maxLength | 0) },
-  () => source.splice(Math.random() * source.length | 0, 1)[0],
-);
-
-
+/**
+ * Функция, возвращающая новый массив опций произвольной длины
+ * @return {array} — массив опций
+ */
 const generateOffers = () => {
   const isOffers = Boolean(getRandomInteger(0, 1));
   if(!isOffers) {
@@ -101,6 +91,11 @@ const generateOffers = () => {
   }
 };
 
+
+/**
+ * Функция генерирования точки маршрута
+ * @return {object} — точка маршрута
+ */
 export const generatePoint = () => {
   return {
     type: getRandomElement(TYPES),
@@ -115,18 +110,16 @@ export const generatePoint = () => {
 
     date_from: generateDate(),
     date_till: generateDate(),
-    cost: getRandomInteger(0, 100),
 
-    //offers: offers, boolean
     offers: generateOffers(),
-
+    cost: getRandomInteger(0, 100),
 
     isFavorite: Boolean(getRandomInteger(0, 1)),
     //isSafed: Boolean(getRandomInteger(0, 1)),
   };
 };
 
-console.log(generatePoint());
+//console.log(generatePoint());
 
 
 // Пометки:
