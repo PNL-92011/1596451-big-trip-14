@@ -83,12 +83,12 @@ const generateDate = () => {
  * @return {array} — массив опций
  */
 const generateOffers = () => {
-  const isOffers = Boolean(getRandomInteger(0, 1));
-  if(!isOffers) {
-    return null;
-  } else {
-    return generateNewArr(OFFERS, MAX_OFFERS);
-  }
+  // const isOffers = Boolean(getRandomInteger(0, 1));
+  // if(!isOffers) {
+  //   return null;
+  // } else {
+  return generateNewArr(OFFERS, MAX_OFFERS);
+  //}
 };
 
 
