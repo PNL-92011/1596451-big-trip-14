@@ -1,39 +1,34 @@
 import {render} from './util.js';
 import {createTripInfo} from './view/trip-info.js';
-import {createMenu} from './view/menu.js';
-import {createFilters} from './view/filters.js';
-import {createTripSort} from './view/trip-sort.js';
-import {createTripEventsList} from './view/events-list.js';
-import {createEditForm} from './view/edit-form.js';
-//import {createNewForm} from './view/create-form.js';
-import {createTripEventsPoint} from './view/events-point.js';
-import {generatePoint} from './mock/mock-point.js';
+import {createMenu} from './view/trip-menu.js';
+import {createFilters} from './view/trip-filters.js';
+import {createSort} from './view/trip-sorting.js';
+import {createPointsList} from './view/trip-point-list.js';
+import {editPointForm} from './view/trip-point-edit.js';
+//import {createPointForm} from './view/trip-point-new.js';
+import {createMockPoints, TRIP_POINTS} from './mock/point.js';
+import {createTripPoints} from './view/trip-point.js';
 
 
-const TRIP_POINTS = 15;
+const siteMainHeader = document.querySelector('.trip-main');
+render(siteMainHeader, createTripInfo(), 'afterbegin');
 
-const createMockPoints = new Array(TRIP_POINTS).fill(null).map(generatePoint);
-console.log(createMockPoints);
+const siteMenu = siteMainHeader.querySelector('.trip-controls');
+render(siteMenu, createMenu(), 'afterbegin');
 
-const tripMainHeader = document.querySelector('.trip-main');
-const tripMenu = tripMainHeader.querySelector('.trip-controls');
-const tripFilter = tripMainHeader.querySelector('.trip-controls__filters');
-const tripEvents = document.querySelector('.trip-events');
+const siteFilter = siteMainHeader.querySelector('.trip-controls__filters');
+render(siteFilter, createFilters(), 'afterbegin');
+
+const siteEvents = document.querySelector('.trip-events');
+render(siteEvents, createSort(), 'afterbegin');
+render(siteEvents, createPointsList(), 'beforeend');
 
 
-render(tripMainHeader, createTripInfo(), 'afterbegin');
-render(tripMenu, createMenu(), 'afterbegin');
-render(tripFilter, createFilters(), 'afterbegin');
-render(tripEvents, createTripSort(), 'afterbegin');
-render(tripEvents, createTripEventsList(), 'beforeend');
-
-const tripEventsList = tripEvents.querySelector('.trip-events__list');
-render(tripEventsList, createEditForm(), 'beforeend');
-//render(tripEventsList, createNewForm(), 'beforeend');
+const siteEventsList = siteEvents.querySelector('.trip-events__list');
+render(siteEventsList, editPointForm(), 'beforeend');
+//render(tripEventsList, createPointForm(), 'beforeend');
 
 for (let i=1; i < TRIP_POINTS; i++) {
-  render(tripEventsList, createTripEventsPoint(createMockPoints[i]), 'beforeend');
+  render(siteEventsList, createTripPoints(createMockPoints[i]), 'beforeend');
 }
-
-// делаем два отдельных компонента: и для создания формы и для редактирования формы
 
