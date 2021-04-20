@@ -31,22 +31,27 @@ const OFFERS = [
   {
     name: 'Add luggage',
     price: 30,
+    nickname: 'luggage',
   },
   {
     name: 'Switch to comfort class',
     price: 100,
+    nickname: 'comfort',
   },
   {
     name: 'Add meal',
     price: 15,
+    nickname: 'meal',
   },
   {
     name: 'Choose seats',
     price: 5,
+    nickname: 'seats',
   },
   {
     name: 'Travel by train',
     price: 40,
+    nickname: 'train',
   },
 ];
 
@@ -94,7 +99,7 @@ export const generatePoint = () => {
 const createMockPoints = new Array(TRIP_POINTS).fill(null).map(generatePoint);
 //console.log(createMockPoints);
 
-export {createMockPoints, TRIP_POINTS};
+export {createMockPoints, TRIP_POINTS, OFFERS, TYPES};
 
 // Можно ли сочетать два варианта экспорта?
 // или если экспортируем более, чем одну сущность - то нужно все указать в конце файла?
