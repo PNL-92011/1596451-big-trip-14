@@ -84,7 +84,7 @@ export const generatePoint = () => {
   return {
     type: getRandomElement(TYPES),
     city: getRandomElement(CITIES),
-    description: getShuffled(DESCRIPTIONS).slice(0, 5),
+    description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
     photos: generatePhotos(),
     dateFrom,
     dateTill,

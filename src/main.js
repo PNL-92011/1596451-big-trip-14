@@ -5,7 +5,7 @@ import {createFilters} from './view/trip-filters.js';
 import {createSort} from './view/trip-sorting.js';
 import {createPointsList} from './view/trip-point-list.js';
 import {editPointForm} from './view/trip-point-edit.js';
-//import {createPointForm} from './view/trip-point-new.js';
+import {createPointForm} from './view/trip-point-new.js';
 import {createMockPoints, TRIP_POINTS} from './mock/point.js';
 import {createTripPoints} from './view/trip-point.js';
 
@@ -25,8 +25,8 @@ render(siteEvents, createPointsList(), 'beforeend');
 
 
 const siteEventsList = siteEvents.querySelector('.trip-events__list');
-render(siteEventsList, editPointForm(), 'beforeend');
-//render(tripEventsList, createPointForm(), 'beforeend');
+render(siteEventsList, editPointForm(createMockPoints[0]), 'beforeend');
+render(siteEventsList, createPointForm(createMockPoints[0]), 'beforeend');
 
 for (let i=1; i < TRIP_POINTS; i++) {
   render(siteEventsList, createTripPoints(createMockPoints[i]), 'beforeend');

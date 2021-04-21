@@ -47,7 +47,7 @@ export const createTripPoints = (createMockPoints) => {
     &plus;&euro;&nbsp;
     <span class="event__offer-price">${offer.price}</span>
   </li>`;
-  });
+  }).join('\n');
 
 
   return `<li class="trip-events__item">
