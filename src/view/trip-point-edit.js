@@ -1,15 +1,15 @@
 import dayjs from 'dayjs';
 import {TYPES, OFFERS} from '../mock/point.js';
 
-export const editPointForm = (createMockPoints) => {
-  const {type, city, dateFrom, dateTill, price, description} = createMockPoints;
+export const editPointForm = (pointData) => {
+  const {type, city, dateFrom, dateTill, price, description, photos} = pointData;
 
-
-  const checkboxTypes = TYPES.map((item) => {
-    return ` <div class="event__type-item">
-    <input id="event-type-${item.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.toLowerCase()}">
-    <label class="event__type-label  event__type-label--${item.toLowerCase()}" for="event-type-taxi-1">${item.toLowerCase()}</label>
-  </div>`;
+  const checkboxTypes = TYPES.map((type) => {
+    return `
+      <div class="event__type-item">
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type}</label>
+      </div>`;
   }).join('');
 
 
@@ -29,6 +29,9 @@ export const editPointForm = (createMockPoints) => {
     return dayjs(date).format('DD/MM/YY HH:mm');
   };
 
+  const photosTemplate = photos.map((photo) => {
+    return `<img class="event__photo" src="${photo}" alt="">`;
+  }).join('');
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
@@ -45,7 +48,6 @@ export const editPointForm = (createMockPoints) => {
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
             ${checkboxTypes}
-
           </fieldset>
         </div>
       </div>
@@ -82,7 +84,8 @@ export const editPointForm = (createMockPoints) => {
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Delete</button>
+      <button class="event__reset-btn" type="reset">Cancel</button>
+      <button class="event__reset-btn visually-hidden" type="reset">Delete</button>
       <button class="event__rollup-btn" type="button">
         <span class="visually-hidden">Open event</span>
       </button>
@@ -100,6 +103,12 @@ export const editPointForm = (createMockPoints) => {
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
         <p class="event__destination-description">${description}</p>
+
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+            ${photosTemplate}
+          </div>
+        </div>
       </section>
 
     </section>

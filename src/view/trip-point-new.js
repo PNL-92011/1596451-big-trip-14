@@ -1,15 +1,15 @@
-import dayjs from 'dayjs';
+import {formatDateSlashTime} from '../util.js';
 import {TYPES, OFFERS} from '../mock/point.js';
 
+export const createPointForm = (pointData) => {
+  const {type, city, dateFrom, dateTill, price, description, photos} = pointData;
 
-export const createPointForm = (createMockPoints) => {
-  const {type, city, dateFrom, dateTill, price, description, photos} = createMockPoints;
-
-  const checkboxTypes = TYPES.map((item) => {
-    return ` <div class="event__type-item">
-    <input id="event-type-${item.toLowerCase()}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${item.toLowerCase()}">
-    <label class="event__type-label  event__type-label--${item.toLowerCase()}" for="event-type-taxi-1">${item.toLowerCase()}</label>
-  </div>`;
+  const checkboxTypes = TYPES.map((type) => {
+    return `
+      <div class="event__type-item">
+        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type}</label>
+      </div>`;
   }).join('');
 
   const checkboxOffers = OFFERS.map((offer) => {
@@ -24,15 +24,9 @@ export const createPointForm = (createMockPoints) => {
   }).join('\n');
 
 
-  const formatDateSlashTime = (date) => {
-    return dayjs(date).format('DD/MM/YY HH:mm');
-  };
-
-
-  const photoTemplate = photos.map((photo) => {
-    return `<img class="event__photo" src="${photos}" alt="${photo.description}">`;
-  });
-  //console.log(photoTemplate);
+  const photosTemplate = photos.map((photo) => {
+    return `<img class="event__photo" src="${photo}" alt="">`;
+  }).join('');
 
 
   return `<li class="trip-events__item">
@@ -97,7 +91,7 @@ export const createPointForm = (createMockPoints) => {
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${photoTemplate}
+            ${photosTemplate}
           </div>
         </div>
       </section>

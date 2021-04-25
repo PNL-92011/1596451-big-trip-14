@@ -8,9 +8,8 @@ const PHOTO_AMOUNT_MIN = 1;
 const PHOTO_AMOUNT_MAX = 5;
 const PHOTO_URL = 'http://picsum.photos/248/152?r=';
 const MAX_OFFERS = 5;
-const TRIP_POINTS = 15;
 
-const TYPES = ['Taxi', 'Bus', 'Train', 'Ship', 'Transport', 'Drive', 'Flight', 'Check-in', 'Sightseeing', 'Restaurant'];
+const TYPES = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 const CITIES = ['Chamonix', 'Rotterdam', 'Toulouse', 'Paris', 'Zurich', 'Madrid', 'Budapest', 'Izmir', 'Milan'];
 
 const DESCRIPTIONS = [
@@ -75,11 +74,9 @@ export const generatePoint = () => {
   // const maxDaysGap = 7;
   // const daysGap = getRandomInteger(-maxDaysGap, maxDaysGap);
   // const dateFrom = dayjs().add(daysGap, 'day');
-  const dateFrom = dayjs().add(getRandomInteger(-7, 7), 'day').toDate();
+  const dateFrom = dayjs().add(getRandomInteger(-7, 7), 'day').add(getRandomInteger(1, 600), 'minute').toDate();
   const dateTill = dayjs(dateFrom).add(getRandomInteger(30, 1400), 'minute').toDate();
-  // время начала любой ТМ = текущее время (ВСЕГДА)
-  // время конца любой ТМ = рандомное в диапазоне
-  // дата = рандомная в диапазоне
+
 
   return {
     type: getRandomElement(TYPES),
@@ -94,12 +91,15 @@ export const generatePoint = () => {
   };
 };
 
+const createMockPoints = (count) => {
+  return new Array(count).fill(null).map(generatePoint);
+};
 
-// The array of mock trip-points
-const createMockPoints = new Array(TRIP_POINTS).fill(null).map(generatePoint);
-//console.log(createMockPoints);
+export {createMockPoints, OFFERS, TYPES};
 
-export {createMockPoints, TRIP_POINTS, OFFERS, TYPES};
 
-// Можно ли сочетать два варианта экспорта?
-// или если экспортируем более, чем одну сущность - то нужно все указать в конце файла?
+// photos:
+//  {
+//    src: url,
+//    description: string
+//  },
