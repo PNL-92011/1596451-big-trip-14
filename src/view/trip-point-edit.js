@@ -1,5 +1,6 @@
 import dayjs from 'dayjs';
-import {TYPES, OFFERS} from '../mock/point.js';
+import { TYPES, OFFERS } from '../util/point.js';
+import { formatDateSlashTime } from '../util/date-format';
 
 export const editPointForm = (pointData = {}) => {
   const {
@@ -33,10 +34,6 @@ export const editPointForm = (pointData = {}) => {
     </div>`;
   }).join('\n');
 
-
-  const formatDateSlashTime = (date) => {
-    return dayjs(date).format('DD/MM/YY HH:mm');
-  };
 
   const photosTemplate = photos.map((photo) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;

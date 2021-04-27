@@ -1,5 +1,5 @@
 import { tripPointsData } from '../main.js';
-import { formatDayMonth } from '../util.js';
+import { formatDayMonth } from '../util/date-format.js';
 
 /**
  * Функция отрисовки маршрута

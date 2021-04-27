@@ -1,15 +1,5 @@
 import dayjs from 'dayjs';
 
-/**
- * Вспомогательная функция для отрисовки компонентов на странице
- * @param {object} container - место, куда помещаем компонент
- * @param {function} template - функция, которая отрисовывает конкретный кусок разметки
- * @param {string} place - место вставки в разметке
- */
-const render = (container, template, place) => {
-  container.insertAdjacentHTML(place, template);
-};
-
 
 const formatDateOnly = (date) => {
   return dayjs(date).format('YYYY-MM-DD');
@@ -55,4 +45,4 @@ const calculateDuration = (start, end) => {
 };
 
 
-export { render, formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration, formatDateSlashTime, formatDayMonth };
+export { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration, formatDateSlashTime, formatDayMonth };
