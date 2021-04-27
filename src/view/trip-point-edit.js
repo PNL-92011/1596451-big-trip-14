@@ -1,22 +1,31 @@
 import dayjs from 'dayjs';
 import {TYPES, OFFERS} from '../mock/point.js';
 
-export const editPointForm = (pointData) => {
-  const {type, city, dateFrom, dateTill, price, description, photos} = pointData;
+export const editPointForm = (pointData = {}) => {
+  const {
+    type = 'flight',
+    destination = '',
+    dateFrom = dayjs().format('DD/MM/YY 00:00'),
+    dateTill = dayjs().format('DD/MM/YY 00:00'),
+    price = '',
+    id = '',
+    photos = '',
+  } = pointData;
+
 
   const checkboxTypes = TYPES.map((type) => {
     return `
       <div class="event__type-item">
-        <input id="event-type-${type}-1" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-1">${type}</label>
+        <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
+        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-${id}">${type}</label>
       </div>`;
   }).join('');
 
 
   const checkboxOffers = OFFERS.map((offer) => {
     return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.nickname}-1" type="checkbox" name="event-offer-${offer.nickname}">
-      <label class="event__offer-label" for="event-offer-${offer.nickname}-1">
+      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.nickname}-${id}" type="checkbox" name="event-offer-${offer.nickname}">
+      <label class="event__offer-label" for="event-offer-${offer.nickname}-${id}">
         <span class="event__offer-title">${offer.name}</span>
         &plus;&euro;&nbsp;
         <span class="event__offer-price">${offer.price}</span>
@@ -30,18 +39,19 @@ export const editPointForm = (pointData) => {
   };
 
   const photosTemplate = photos.map((photo) => {
-    return `<img class="event__photo" src="${photo}" alt="">`;
+    return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   }).join('');
+
 
   return `<li class="trip-events__item">
   <form class="event event--edit" action="#" method="post">
     <header class="event__header">
       <div class="event__type-wrapper">
-        <label class="event__type  event__type-btn" for="event-type-toggle-1">
+        <label class="event__type  event__type-btn" for="event-type-toggle-${id}">
           <span class="visually-hidden">Choose event type</span>
           <img class="event__type-icon" width="17" height="17" src="img/icons/${type}.png" alt="Event type icon">
         </label>
-        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-1" type="checkbox">
+        <input class="event__type-toggle  visually-hidden" id="event-type-toggle-${id}" type="checkbox">
 
 
         <div class="event__type-list">
@@ -57,7 +67,7 @@ export const editPointForm = (pointData) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.city}" list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -102,11 +112,11 @@ export const editPointForm = (pointData) => {
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
+        <p class="event__destination-description">${destination.description}</p>
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-            ${photosTemplate}
+          ${photosTemplate}
           </div>
         </div>
       </section>
@@ -115,3 +125,4 @@ export const editPointForm = (pointData) => {
   </form>
 </li>`;
 };
+

@@ -1,14 +1,19 @@
 import { tripPointsData } from '../main.js';
 import { formatDayMonth } from '../util.js';
 
+/**
+ * Функция отрисовки маршрута
+ * @return {string} — последовательность городов маршрута
+ */
 const getRoute = (points) => {
+
   if (points.length === 0) {
     return ' ';
-  } else
+  }
 
   if (points.length === 1) {
     return points[0].city;
-  } else
+  }
 
   if (points.length === 2) {
     const tripPointsDataSortByDate = tripPointsData.sort((a, b) => {
@@ -19,8 +24,8 @@ const getRoute = (points) => {
         return -1;
       }
     });
-    return `<h1 class="trip-info__title">${tripPointsDataSortByDate[0].city} &mdash; ${tripPointsDataSortByDate[1].city}</h1>`;
-  } else
+    return `<h1 class="trip-info__title">${tripPointsDataSortByDate[0].destination.city} &mdash; ${tripPointsDataSortByDate[1].destination.city}</h1>`;
+  }
 
   if (points.length === 3) {
 
@@ -32,7 +37,7 @@ const getRoute = (points) => {
         return -1;
       }
     });
-    return `<h1 class="trip-info__title">${tripPointsDataSortByDate[0].city} &mdash; ${tripPointsDataSortByDate[1].city} &mdash; ${tripPointsDataSortByDate[2].city}</h1>`;
+    return `<h1 class="trip-info__title">${tripPointsDataSortByDate[0].destination.city} &mdash; ${tripPointsDataSortByDate[1].destination.city} &mdash; ${tripPointsDataSortByDate[2].destination.city}</h1>`;
   } else
 
   if (points.length > 3) {
@@ -45,7 +50,7 @@ const getRoute = (points) => {
         return -1;
       }
     });
-    return `<h1 class="trip-info__title">${tripPointsDataSortByDate[0].city} &mdash; ... &mdash; ${tripPointsDataSortByDate[tripPointsDataSortByDate.length - 1].city}</h1>`;
+    return `<h1 class="trip-info__title">${tripPointsDataSortByDate[0].destination.city} &mdash; ... &mdash; ${tripPointsDataSortByDate[tripPointsDataSortByDate.length - 1].destination.city}</h1>`;
   }
 };
 
