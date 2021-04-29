@@ -1,14 +1,17 @@
-import {render} from './util/common.js';
-import {createTripInfo} from './view/trip-info.js';
-import {createMenu} from './view/trip-menu.js';
-import {createFilters} from './view/trip-filters.js';
-import {createSort} from './view/trip-sorting.js';
-import {createPointsList} from './view/trip-point-list.js';
-import {editPointForm} from './view/trip-point-edit.js';
+import {renderTemplate, renderElement, RenderPosition} from './util/common.js';
 import {createMockPoints} from './mock/point.js';
+
+import MenuView from './view/trip-menu.js';
+import SortView from './view/trip-sorting.js';
+import FilterView from './view/trip-filters.js';
+import PointsListView from './view/trip-point-list.js';
+import TripInfoView from './view/trip-info.js';
+
+
+import {editPointForm} from './view/trip-point-edit.js';
 import {createTripPoint} from './view/trip-point.js';
 
-const TRIP_POINTS = 4;
+const TRIP_POINTS = 3;
 const tripPointsData = createMockPoints(TRIP_POINTS);
 
 const tripPointsDataSortByDate = tripPointsData.sort((a, b) => {
@@ -20,26 +23,35 @@ const tripPointsDataSortByDate = tripPointsData.sort((a, b) => {
   }
 });
 
+// Trip-Info
 const siteMainHeader = document.querySelector('.trip-main');
-render(siteMainHeader, createTripInfo(), 'afterbegin');
+const tripInfoComponent = new TripInfoView();
+renderElement(siteMainHeader, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+renderElement(tripInfoComponent.getElement(), new TripInfoView(tripPointsData).getElement(), RenderPosition.AFTERBEGIN);
 
+// Menu
 const siteMenu = siteMainHeader.querySelector('.trip-controls');
-render(siteMenu, createMenu(), 'afterbegin');
+renderElement(siteMenu, new MenuView().getElement(), RenderPosition.AFTERBEGIN);
 
+// Filter
 const siteFilter = siteMainHeader.querySelector('.trip-controls__filters');
-render(siteFilter, createFilters(), 'afterbegin');
+renderElement(siteFilter, new FilterView(tripPointsData).getElement(), RenderPosition.AFTERBEGIN);
 
+// Sort
 const siteEvents = document.querySelector('.trip-events');
-render(siteEvents, createSort(), 'afterbegin');
-render(siteEvents, createPointsList(), 'beforeend');
+renderElement(siteEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN);
+
+// Point List
+renderElement(siteEvents, new PointsListView().getElement(), RenderPosition.BEFOREEND);
 
 
+// Edit Form
 const siteEventsList = siteEvents.querySelector('.trip-events__list');
-render(siteEventsList, editPointForm(tripPointsDataSortByDate[0]), 'beforeend');
+renderTemplate(siteEventsList, editPointForm(tripPointsDataSortByDate[0]), 'beforeend');
 
-
+// All points
 for (let i=1; i < TRIP_POINTS; i++) {
-  render(siteEventsList, createTripPoint(tripPointsDataSortByDate[i]), 'beforeend');
+  renderTemplate(siteEventsList, createTripPoint(tripPointsDataSortByDate[i]), 'beforeend');
 }
 
 

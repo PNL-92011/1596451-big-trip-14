@@ -1,5 +1,6 @@
 import { tripPointsData } from '../main.js';
 import { formatDayMonth } from '../util/date-format.js';
+import {createDomElement} from '../util/common.js';
 
 /**
  * Функция отрисовки маршрута
@@ -72,7 +73,7 @@ const getDateRoute = (points) => {
 };
 
 
-export const createTripInfo = () => {
+const createTripInfo = () => {
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
     ${getRoute(tripPointsData)}
@@ -87,9 +88,24 @@ export const createTripInfo = () => {
 };
 
 
-// Наименование маршрута путешествия формируется автоматически и состоит из пунктов назначения (названий городов), разделённых тире: «Amsterdam — Geneva — Chamonix».
-// Если городов больше 3-х, то в наименовании маршрута отображается первый и последний город, разделённые многоточием: «Amsterdam —... — Chamonix».
+export default class TripInfo {
+  constructor() {
+    this._element = null;
+  }
 
-// Даты путешествия в шапке заполняются автоматически.
-// Дата начала всего путешествия соответствует дате начала первой точки маршрута.
-// Дата окончания — дате завершения последней точки маршрута. Например, «18 AUG — 6 OCT».
+  getTemplate() {
+    return createTripInfo();
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createDomElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
