@@ -1,18 +1,21 @@
 import dayjs from 'dayjs';
 import { TYPES, OFFERS } from '../util/point.js';
 import { formatDateSlashTime } from '../util/date-format';
+import {createDomElement} from '../util/common.js';
 
-export const editPointForm = (pointData = {}) => {
-  const {
-    type = 'flight',
-    destination = '',
-    dateFrom = dayjs().format('DD/MM/YY 00:00'),
-    dateTill = dayjs().format('DD/MM/YY 00:00'),
-    price = '',
-    id = '',
-    photos = '',
-  } = pointData;
+const BLANK_POINT = {
+  type: 'flight',
+  destination: '',
+  dateFrom: dayjs().format('DD/MM/YY 00:00'),
+  dateTill: dayjs().format('DD/MM/YY 00:00'),
+  price: '',
+  id: '',
+  photos: '',
+};
 
+
+const editPointForm = (pointData) => {
+  const {type, destination, dateFrom, dateTill, price, id, photos} = pointData;
 
   const checkboxTypes = TYPES.map((type) => {
     return `
@@ -123,3 +126,26 @@ export const editPointForm = (pointData = {}) => {
 </li>`;
 };
 
+
+export default class EditForm {
+  constructor(point = BLANK_POINT) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return editPointForm(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createDomElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

@@ -1,6 +1,7 @@
 import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration } from '../util/date-format.js';
+import {createDomElement} from '../util/common.js';
 
-export const createTripPoint = (createMockPoints) => {
+const createTripPoint = (createMockPoints) => {
   const {type, destination, dateFrom, dateTill, offers, price, isFavorite} = createMockPoints;
 
   const createOffers = offers.map((offer) => {
@@ -58,3 +59,27 @@ export const createTripPoint = (createMockPoints) => {
   </div>
 </li>`;
 };
+
+
+export default class TripPoint {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripPoint(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createDomElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}

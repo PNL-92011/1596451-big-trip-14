@@ -1,4 +1,4 @@
-import {renderTemplate, renderElement, RenderPosition} from './util/common.js';
+import {renderElement, RenderPosition} from './util/common.js';
 import {createMockPoints} from './mock/point.js';
 
 import MenuView from './view/trip-menu.js';
@@ -6,10 +6,9 @@ import SortView from './view/trip-sorting.js';
 import FilterView from './view/trip-filters.js';
 import PointsListView from './view/trip-point-list.js';
 import TripInfoView from './view/trip-info.js';
+import TripPointView from './view/trip-point.js';
+import EditFormView from './view/trip-point-edit.js';
 
-
-import {editPointForm} from './view/trip-point-edit.js';
-import {createTripPoint} from './view/trip-point.js';
 
 const TRIP_POINTS = 3;
 const tripPointsData = createMockPoints(TRIP_POINTS);
@@ -27,7 +26,6 @@ const tripPointsDataSortByDate = tripPointsData.sort((a, b) => {
 const siteMainHeader = document.querySelector('.trip-main');
 const tripInfoComponent = new TripInfoView();
 renderElement(siteMainHeader, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
-renderElement(tripInfoComponent.getElement(), new TripInfoView(tripPointsData).getElement(), RenderPosition.AFTERBEGIN);
 
 // Menu
 const siteMenu = siteMainHeader.querySelector('.trip-controls');
@@ -44,14 +42,13 @@ renderElement(siteEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN
 // Point List
 renderElement(siteEvents, new PointsListView().getElement(), RenderPosition.BEFOREEND);
 
-
 // Edit Form
 const siteEventsList = siteEvents.querySelector('.trip-events__list');
-renderTemplate(siteEventsList, editPointForm(tripPointsDataSortByDate[0]), 'beforeend');
+renderElement(siteEventsList, new EditFormView(tripPointsDataSortByDate[0]).getElement(), RenderPosition.BEFOREEND);
 
 // All points
-for (let i=1; i < TRIP_POINTS; i++) {
-  renderTemplate(siteEventsList, createTripPoint(tripPointsDataSortByDate[i]), 'beforeend');
+for (let i=0; i < TRIP_POINTS; i++) {
+  renderElement(siteEventsList, new TripPointView(tripPointsDataSortByDate[i]).getElement(), RenderPosition.BEFOREEND);
 }
 
 
