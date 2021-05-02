@@ -102,5 +102,4 @@ for (let i=0; i < TRIP_POINTS; i++) {
   renderPoint(siteEventsList, tripPointsDataSortByDate[i]);
 }
 
-
 export { tripPointsData };
