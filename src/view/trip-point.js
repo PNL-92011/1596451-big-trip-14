@@ -1,7 +1,8 @@
-import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration } from '../util.js';
+import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration } from '../util/date-format.js';
+import {createDomElement} from '../util/common.js';
 
-export const createTripPoints = (createMockPoints) => {
-  const {type, city, dateFrom, dateTill, offers, price, isFavorite} = createMockPoints;
+const createTripPoint = (createMockPoints) => {
+  const {type, destination, dateFrom, dateTill, offers, price, isFavorite} = createMockPoints;
 
   const createOffers = offers.map((offer) => {
     return `<li class="event__offer">
@@ -21,7 +22,7 @@ export const createTripPoints = (createMockPoints) => {
     </div>
 
 
-    <h3 class="event__title">${type} ${city}</h3>
+    <h3 class="event__title">${type} ${destination.city}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${formatFullDate(dateFrom)}">${formatTimeOnly(dateFrom)}</time>
@@ -60,14 +61,25 @@ export const createTripPoints = (createMockPoints) => {
 };
 
 
-// /**
-//  * calculateDuration = (start, end)
-//  * Функция считает разницу дат (времени)
-//  * @param {date} start - начало промежутка
-//  * @param {date} end - конец промежутка
-//  * @returns {string} - возвращает промежуток в формате ${hours}H ${minutes}M
-//  * до 60 мин - возвращает ${minutes}M
-//  * // Math.round() возвращает число, округлённое к ближайшему целому.
-//  * // Math.floor() - округление вниз до ближайшего меньшего целого.
-//  * // % - возвращает целочисленный остаток от деления двух операндов.
-//  */
+export default class Point {
+  constructor(point) {
+    this._point = point;
+    this._element = null;
+  }
+
+  getTemplate() {
+    return createTripPoint(this._point);
+  }
+
+  getElement() {
+    if (!this._element) {
+      this._element = createDomElement(this.getTemplate());
+    }
+
+    return this._element;
+  }
+
+  removeElement() {
+    this._element = null;
+  }
+}
