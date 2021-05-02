@@ -61,7 +61,7 @@ const createTripPoint = (createMockPoints) => {
 };
 
 
-export default class TripPoint {
+export default class Point {
   constructor(point) {
     this._point = point;
     this._element = null;
