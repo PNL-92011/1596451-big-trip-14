@@ -1,7 +1,7 @@
 import dayjs from 'dayjs';
 import { TYPES, OFFERS } from '../util/point.js';
 import { formatDateSlashTime } from '../util/date-format';
-import {createDomElement} from '../util/common.js';
+import AbstractView from './abstract.js';
 
 const BLANK_POINT = {
   type: 'flight',
@@ -127,25 +127,14 @@ const editPointForm = (pointData) => {
 };
 
 
-export default class EditForm {
+export default class EditForm extends AbstractView {
   constructor(point = BLANK_POINT) {
+    super();
     this._point = point;
-    this._element = null;
+    //this._element = null;
   }
 
   getTemplate() {
     return editPointForm(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createDomElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

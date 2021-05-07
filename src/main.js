@@ -89,7 +89,7 @@ render(siteEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN);
 render(siteEvents, new PointsListView().getElement(), RenderPosition.BEFOREEND);
 
 // New point
-if (tripPointsData.length === 0) {
+if (!tripPointsData.length) {
   render(siteEvents, new NewPointView().getElement(), RenderPosition.BEFOREEND);
 }
 
@@ -98,9 +98,6 @@ const siteEventsList = siteEvents.querySelector('.trip-events__list');
 if (tripPointsData.length > 0) {
   tripPointsDataSortByDate.forEach((point) => renderPoint(siteEventsList, point));
 }
-// Давай подумаем как заменить for на forEach() например...
-// Тк не все нужны точки для показа, можешь массив обрезать через slice()
-// ??? не нашла в ТЗ ограничений по отображению ТМ - не понимаю, по какому принципу обрезать массив ТМ
 
 
 export { tripPointsData };

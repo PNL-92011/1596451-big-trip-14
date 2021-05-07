@@ -1,5 +1,5 @@
 import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration } from '../util/date-format.js';
-import {createDomElement} from '../util/common.js';
+import AbstractView from './abstract.js';
 
 const createTripPoint = (createMockPoints) => {
   const {type, destination, dateFrom, dateTill, offers, price, isFavorite} = createMockPoints;
@@ -61,25 +61,14 @@ const createTripPoint = (createMockPoints) => {
 };
 
 
-export default class Point {
+export default class Point extends AbstractView {
   constructor(point) {
+    super();
     this._point = point;
-    this._element = null;
+    //this._element = null;
   }
 
   getTemplate() {
     return createTripPoint(this._point);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createDomElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }
