@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './util/common.js';
+import {render, RenderPosition} from './util/render.js';
 import {createMockPoints} from './mock/point.js';
 
 import MenuView from './view/trip-menu.js';
@@ -44,23 +44,26 @@ const renderPoint = (pointsListElement, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  // обработчик на стрелку-открытие
+  pointComponent.setClickHandler(() => {
     replacePointToEditForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  // обработчик на кнопку Save
+  pointEditComponent.setFormHandler(() => {
     replaceEditFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__reset-btn').addEventListener('click', () => {
+  // обработчик на Cancel
+  pointEditComponent.setClickCancelHandler(() => {
     replaceEditFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  // обработчик на стрелку-закрытие
+  pointEditComponent.setEditClickHandler(() => {
     replaceEditFormToPoint();
   });
 

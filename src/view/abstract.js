@@ -1,4 +1,4 @@
-import {createDomElement} from '../util/common.js';
+import {createDomElement} from '../util/render.js';
 
 
 export default class Abstract {
@@ -8,6 +8,7 @@ export default class Abstract {
     }
 
     this._element = null;
+    this._callback = {};
   }
 
   getTemplate() {

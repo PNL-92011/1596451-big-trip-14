@@ -1,3 +1,5 @@
+import Abstract from '../view/abstract.js';
+
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -11,6 +13,14 @@ export const RenderPosition = {
  * @param {string} place - место вставки в разметке
  */
 export const render = (container, element, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (element instanceof Abstract) {
+    element = element.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
