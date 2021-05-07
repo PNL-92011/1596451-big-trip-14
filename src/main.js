@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './util/render.js';
+import {render, RenderPosition, replace} from './util/render.js';
 import {createMockPoints} from './mock/point.js';
 
 import MenuView from './view/trip-menu.js';
@@ -29,11 +29,11 @@ const renderPoint = (pointsListElement, point) => {
   const pointEditComponent = new EditFormView(point);
 
   const replacePointToEditForm = () => {
-    pointsListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceEditFormToPoint = () => {
-    pointsListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -67,33 +67,33 @@ const renderPoint = (pointsListElement, point) => {
     replaceEditFormToPoint();
   });
 
-  render(pointsListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointsListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 
 // Trip-Info
 const siteMainHeader = document.querySelector('.trip-main');
 const tripInfoComponent = new TripInfoView();
-render(siteMainHeader, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(siteMainHeader, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
 // Menu
 const siteMenu = siteMainHeader.querySelector('.trip-controls');
-render(siteMenu, new MenuView().getElement(), RenderPosition.AFTERBEGIN);
+render(siteMenu, new MenuView(), RenderPosition.AFTERBEGIN);
 
 // Filter
 const siteFilter = siteMainHeader.querySelector('.trip-controls__filters');
-render(siteFilter, new FilterView(tripPointsData).getElement(), RenderPosition.AFTERBEGIN);
+render(siteFilter, new FilterView(tripPointsData), RenderPosition.AFTERBEGIN);
 
 // Sort
 const siteEvents = document.querySelector('.trip-events');
-render(siteEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN);
+render(siteEvents, new SortView(), RenderPosition.AFTERBEGIN);
 
 // Point List
-render(siteEvents, new PointsListView().getElement(), RenderPosition.BEFOREEND);
+render(siteEvents, new PointsListView(), RenderPosition.BEFOREEND);
 
 // New point
 if (!tripPointsData.length) {
-  render(siteEvents, new NewPointView().getElement(), RenderPosition.BEFOREEND);
+  render(siteEvents, new NewPointView(), RenderPosition.BEFOREEND);
 }
 
 // All points
