@@ -133,9 +133,13 @@ export default class EditForm extends AbstractView {
     this._point = point;
     //this._element = null;
 
-    this._formHandler = this._formHandler.bind(this);
-    this._editClickHandler = this._editClickHandler.bind(this);
-    this._clickCancelHandler = this._clickCancelHandler.bind(this);
+    // renaming
+    // this._formHandler = this._formHandler.bind(this);
+    // this._editClickHandler = this._editClickHandler.bind(this);
+    // this._clickCancelHandler = this._clickCancelHandler.bind(this);
+    this._handleEditClick = this._handleEditClick.bind(this);
+    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleCancelClick = this._handleCancelClick.bind(this);
   }
 
   getTemplate() {
@@ -143,37 +147,37 @@ export default class EditForm extends AbstractView {
   }
 
   // обработчик на Save
-  _formHandler(evt) {
+  _handleFormSubmit(evt) {
     evt.preventDefault();
-    this._callback.formSubmit();
+    this._callback.formSubmit(this._point);
   }
 
   setFormHandler(callback) {
     this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._formHandler);
+    this.getElement().querySelector('form').addEventListener('submit', this._handleFormSubmit);
   }
 
 
   // обработчик на стрелку закрытия формы
-  _editClickHandler(evt) {
+  _handleEditClick(evt) {
     evt.preventDefault();
-    this._callback.editClick();
+    this._callback.editClick(this._point);
   }
 
   setEditClickHandler(callback) {
     this._callback.editClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._editClickHandler);
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._handleEditClick);
   }
 
 
   // обработчик на Cancel/Delete
-  _clickCancelHandler(evt) {
+  _handleCancelClick(evt) {
     evt.preventDefault();
     this._callback.clickCancel();
   }
 
   setClickCancelHandler(callback) {
     this._callback.clickCancel = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._clickCancelHandler);
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
   }
 }
