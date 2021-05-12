@@ -9,52 +9,42 @@ import PointPresenter from '../presenter/point.js';
 
 
 export default class Trip {
-  constructor(tripContainer) {
+  constructor(tripContainer, tripInfoContainer, tripFilterContainer, tripMenuContainer) {
     this._tripContainer = tripContainer;
+    this._tripInfoContainer = tripInfoContainer;
+    this._tripFilterContainer = tripFilterContainer;
+    this._tripMenuContainer = tripMenuContainer;
 
-    this._pointPresenter = {};
-
-    this._sortComponent = new SortView();
     this._pointsListComponent = new PointsListView();
-    this._newPointComponent = new NewPointView();
-
-    this._tripInfoComponent = new TripInfoView();
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
+    this._sortComponent = new SortView();
+    this._newPointComponent = new NewPointView();
+    this._tripInfoComponent = new TripInfoView();
 
+    this._pointPresenter = {};
   }
 
   init(tripPointsData) {
     this._tripPointsData = tripPointsData;
     this._renderTrip();
-    //this._renderList();
+    this._renderList();
   }
 
   _renderSort() {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
-
   _renderTripInfo() {
-    render(this._tripContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
+    render(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
 
   _renderMenu() {
-    render(this._tripContainer, this._menuComponent, RenderPosition.BEFOREEND);
+    render(this._tripMenuContainer, this._menuComponent, RenderPosition.BEFOREEND);
   }
 
   _renderFilter() {
-    render(this._tripContainer, this._filterComponent, RenderPosition.BEFOREEND);
-  }
-
-
-  _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListComponent);
-    pointPresenter.init(point);
-  }
-
-  _renderPoints() {
-    this._tripPointsData.forEach((tripPointsData) => this._renderPoint(tripPointsData));
+    render(this._tripFilterContainer, this._filterComponent, RenderPosition.BEFOREEND);
   }
 
   _renderList() {
@@ -62,20 +52,29 @@ export default class Trip {
     this._renderPoints();
   }
 
+  _renderPoint(point) {
+    const pointPresenter = new PointPresenter(this._pointsListComponent);
+    pointPresenter.init(point);
+  }
+
+  _renderPoints() {
+    this._tripPointsData.forEach((point) => this._renderPoint(point));
+  }
+
   _renderMessage() {
     render(this._tripContainer, this._newPointComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTrip() {
-    if (this._tripPointsData < 1) {
+    if (!this._tripPointsData.length) {
       this._renderMessage();
       return;
     }
+
     this._renderTripInfo();
     this._renderMenu();
     this._renderFilter();
     this._renderSort();
-    //this._renerList();
   }
 }
 

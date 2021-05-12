@@ -131,12 +131,7 @@ export default class EditForm extends AbstractView {
   constructor(point = BLANK_POINT) {
     super();
     this._point = point;
-    //this._element = null;
 
-    // renaming
-    // this._formHandler = this._formHandler.bind(this);
-    // this._editClickHandler = this._editClickHandler.bind(this);
-    // this._clickCancelHandler = this._clickCancelHandler.bind(this);
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleCancelClick = this._handleCancelClick.bind(this);
@@ -146,31 +141,31 @@ export default class EditForm extends AbstractView {
     return editPointForm(this._point);
   }
 
-  // обработчик на Save
+  /** обработчик на Save */
   _handleFormSubmit(evt) {
     evt.preventDefault();
     this._callback.formSubmit(this._point);
   }
 
-  setFormHandler(callback) {
+  setClickSaveHandler(callback) {
     this._callback.formSubmit = callback;
     this.getElement().querySelector('form').addEventListener('submit', this._handleFormSubmit);
   }
 
 
-  // обработчик на стрелку закрытия формы
+  /** обработчик на стрелку закрытия формы */
   _handleEditClick(evt) {
     evt.preventDefault();
     this._callback.editClick(this._point);
   }
 
-  setEditClickHandler(callback) {
+  setClickCloseHandler(callback) {
     this._callback.editClick = callback;
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._handleEditClick);
   }
 
 
-  // обработчик на Cancel/Delete
+  /** обработчик на Cancel/Delete */
   _handleCancelClick(evt) {
     evt.preventDefault();
     this._callback.clickCancel();

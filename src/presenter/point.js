@@ -10,7 +10,6 @@ export default class Point {
     this._pointComponent = null;
     this._pointEditComponent = null;
 
-
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
@@ -25,18 +24,19 @@ export default class Point {
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new EditFormView(point);
 
-    this._pointComponent.setClickOpenHandler(this._handleEditClick);          // стрелка-открытие
-    this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);     // Save
-    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);   // Cancel
-    this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);    // стрелка-закрытие
+    this._pointComponent.setClickOpenHandler(this._handleEditClick);           /** стрелка-открытие */
+    this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** Save */
+    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** Cancel */
+    this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** стрелка-закрытие */
+
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
       render(this._pointListContainer, this._pointComponent, RenderPosition.BEFOREEND);
       return;
     }
 
-    // Проверка на наличие в DOM необходима,
-    // чтобы не пытаться заменить то, что не было отрисовано
+    /** Проверка на наличие в DOM необходима, */
+    /** чтобы не пытаться заменить то, что не было отрисовано */
     if (this._pointListContainer.getElement().contains(prevPointComponent.getElement())) {
       replace(this._pointComponent, prevPointComponent);
     }
@@ -44,7 +44,6 @@ export default class Point {
     if (this._pointListContainer.getElement().contains(prevPointEditComponent.getElement())) {
       replace(this._pointEditComponent, prevPointEditComponent);
     }
-
     remove(prevPointComponent);
     remove(prevPointEditComponent);
   }
@@ -54,10 +53,9 @@ export default class Point {
     remove(this._pointEditComponent);
   }
 
-
   _replacePointToEditForm() {
-    replace(this._pointEditComponent, this._pointComponent );
-    document.removeEventListener('keydown', this._escKeyDownHandler);
+    replace(this._pointEditComponent, this._pointComponent);
+    document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _replaceEditFormToPoint() {
@@ -74,15 +72,9 @@ export default class Point {
 
   _handleEditClick() {
     this._replacePointToEditForm();
-    document.addEventListener('keydown', this._escKeyDownHandler);
   }
 
   _handleFormSubmit() {
     this._replaceEditFormToPoint();
-    document.addEventListener('keydown', this._escKeyDownHandler);
   }
-
 }
-
-
-// reset
