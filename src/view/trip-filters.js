@@ -1,4 +1,4 @@
-import {createDomElement} from '../util/common.js';
+import AbstractView from './abstract.js';
 
 const createFilters = () => {
   return `<form class="trip-filters" action="#" method="get">
@@ -22,25 +22,14 @@ const createFilters = () => {
 };
 
 
-export default class Filter {
+export default class Filter extends AbstractView {
   constructor(filters) {
+    super();
     this._filters = filters;
     this._element = null;
   }
 
   getTemplate() {
     return createFilters(this._filters);
-  }
-
-  getElement() {
-    if (!this._element) {
-      this._element = createDomElement(this.getTemplate());
-    }
-
-    return this._element;
-  }
-
-  removeElement() {
-    this._element = null;
   }
 }

@@ -1,4 +1,4 @@
-import {render, RenderPosition} from './util/common.js';
+import {render, RenderPosition, replace} from './util/render.js';
 import {createMockPoints} from './mock/point.js';
 
 import MenuView from './view/trip-menu.js';
@@ -29,11 +29,11 @@ const renderPoint = (pointsListElement, point) => {
   const pointEditComponent = new EditFormView(point);
 
   const replacePointToEditForm = () => {
-    pointsListElement.replaceChild(pointEditComponent.getElement(), pointComponent.getElement());
+    replace(pointEditComponent, pointComponent);
   };
 
   const replaceEditFormToPoint = () => {
-    pointsListElement.replaceChild(pointComponent.getElement(), pointEditComponent.getElement());
+    replace(pointComponent, pointEditComponent);
   };
 
   const onEscKeyDown = (evt) => {
@@ -44,53 +44,56 @@ const renderPoint = (pointsListElement, point) => {
     }
   };
 
-  pointComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  // обработчик на стрелку-открытие
+  pointComponent.setClickHandler(() => {
     replacePointToEditForm();
     document.addEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('form').addEventListener('submit', (evt) => {
-    evt.preventDefault();
+  // обработчик на кнопку Save
+  pointEditComponent.setFormHandler(() => {
     replaceEditFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__reset-btn').addEventListener('click', () => {
+  // обработчик на Cancel
+  pointEditComponent.setClickCancelHandler(() => {
     replaceEditFormToPoint();
     document.removeEventListener('keydown', onEscKeyDown);
   });
 
-  pointEditComponent.getElement().querySelector('.event__rollup-btn').addEventListener('click', () => {
+  // обработчик на стрелку-закрытие
+  pointEditComponent.setEditClickHandler(() => {
     replaceEditFormToPoint();
   });
 
-  render(pointsListElement, pointComponent.getElement(), RenderPosition.BEFOREEND);
+  render(pointsListElement, pointComponent, RenderPosition.BEFOREEND);
 };
 
 
 // Trip-Info
 const siteMainHeader = document.querySelector('.trip-main');
 const tripInfoComponent = new TripInfoView();
-render(siteMainHeader, tripInfoComponent.getElement(), RenderPosition.AFTERBEGIN);
+render(siteMainHeader, tripInfoComponent, RenderPosition.AFTERBEGIN);
 
 // Menu
 const siteMenu = siteMainHeader.querySelector('.trip-controls');
-render(siteMenu, new MenuView().getElement(), RenderPosition.AFTERBEGIN);
+render(siteMenu, new MenuView(), RenderPosition.AFTERBEGIN);
 
 // Filter
 const siteFilter = siteMainHeader.querySelector('.trip-controls__filters');
-render(siteFilter, new FilterView(tripPointsData).getElement(), RenderPosition.AFTERBEGIN);
+render(siteFilter, new FilterView(tripPointsData), RenderPosition.AFTERBEGIN);
 
 // Sort
 const siteEvents = document.querySelector('.trip-events');
-render(siteEvents, new SortView().getElement(), RenderPosition.AFTERBEGIN);
+render(siteEvents, new SortView(), RenderPosition.AFTERBEGIN);
 
 // Point List
-render(siteEvents, new PointsListView().getElement(), RenderPosition.BEFOREEND);
+render(siteEvents, new PointsListView(), RenderPosition.BEFOREEND);
 
 // New point
-if (tripPointsData.length === 0) {
-  render(siteEvents, new NewPointView().getElement(), RenderPosition.BEFOREEND);
+if (!tripPointsData.length) {
+  render(siteEvents, new NewPointView(), RenderPosition.BEFOREEND);
 }
 
 // All points
@@ -98,9 +101,6 @@ const siteEventsList = siteEvents.querySelector('.trip-events__list');
 if (tripPointsData.length > 0) {
   tripPointsDataSortByDate.forEach((point) => renderPoint(siteEventsList, point));
 }
-// Давай подумаем как заменить for на forEach() например...
-// Тк не все нужны точки для показа, можешь массив обрезать через slice()
-// ??? не нашла в ТЗ ограничений по отображению ТМ - не понимаю, по какому принципу обрезать массив ТМ
 
 
 export { tripPointsData };

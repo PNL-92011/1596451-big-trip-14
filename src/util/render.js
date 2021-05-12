@@ -1,3 +1,5 @@
+import Abstract from '../view/abstract.js';
+
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
@@ -11,6 +13,14 @@ export const RenderPosition = {
  * @param {string} place - место вставки в разметке
  */
 export const render = (container, element, place) => {
+  if (container instanceof Abstract) {
+    container = container.getElement();
+  }
+
+  if (element instanceof Abstract) {
+    element = element.getElement();
+  }
+
   switch (place) {
     case RenderPosition.AFTERBEGIN:
       container.prepend(element);
@@ -32,3 +42,27 @@ export const createDomElement = (template) => {
 
   return newElement.firstElementChild;                // 3. возвращаем этот DOM-элемент
 };
+
+
+/**
+ * Функция замены одного элемента на другой
+ */
+export const replace = (newChild, oldChild) => {
+  if (oldChild instanceof Abstract) {
+    oldChild = oldChild.getElement();
+  }
+
+  if (newChild instanceof Abstract) {
+    newChild = newChild.getElement();
+  }
+
+  const parent = oldChild.parentElement;
+
+  if (parent === null || oldChild === null || newChild === null) {
+    throw new Error('Can\'t replace unexisting elements');
+  }
+
+  parent.replaceChild(newChild, oldChild);
+};
+
+
