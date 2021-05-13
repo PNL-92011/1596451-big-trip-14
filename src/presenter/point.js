@@ -4,8 +4,9 @@ import { render, RenderPosition, replace, remove } from '../util/render.js';
 
 
 export default class Point {
-  constructor(pointListContainer) {
+  constructor(pointListContainer, handlePointFavorite) {
     this._pointListContainer = pointListContainer;
+    this._handlePointFavorite = handlePointFavorite;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
@@ -13,6 +14,7 @@ export default class Point {
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
+    this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
   }
 
   init(point) {
@@ -24,10 +26,11 @@ export default class Point {
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new EditFormView(point);
 
-    this._pointComponent.setClickOpenHandler(this._handleEditClick);           /** стрелка-открытие */
-    this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** Save */
-    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** Cancel */
-    this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** стрелка-закрытие */
+    this._pointComponent.setClickOpenHandler(this._handleEditClick);           /** открытие стрелка */
+    this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** закрытие Save */
+    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel */
+    this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** закрытие стрелка */
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);   /** Favorite */
 
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -70,11 +73,24 @@ export default class Point {
     }
   }
 
+  _handleFavoriteClick() {
+    this._handlePointFavorite(
+      Object.assign(
+        {},
+        this._point,
+        {
+          isFavorite: !this._point.isFavorite,
+        },
+      ),
+    );
+  }
+
   _handleEditClick() {
     this._replacePointToEditForm();
   }
 
   _handleFormSubmit() {
     this._replaceEditFormToPoint();
+    this._handlePointFavorite(this._point);
   }
 }

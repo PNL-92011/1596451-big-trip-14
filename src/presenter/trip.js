@@ -4,7 +4,7 @@ import FilterView from '../view/trip-filters.js';
 import PointsListView from '../view/trip-point-list.js';
 import TripInfoView from '../view/trip-info.js';
 import NewPointView from '../view/trip-point-new.js';
-import { render, RenderPosition } from '../util/render.js';
+import { render, RenderPosition, updateItem } from '../util/render.js';
 import PointPresenter from '../presenter/point.js';
 
 
@@ -23,6 +23,8 @@ export default class Trip {
     this._tripInfoComponent = new TripInfoView();
 
     this._pointPresenter = {};
+
+    this._handlePointChange = this._handlePointChange.bind(this);
   }
 
   init(tripPointsData) {
@@ -52,13 +54,26 @@ export default class Trip {
     this._renderPoints();
   }
 
+  _handlePointChange(updatedPoint) {
+    this._tripPointsData = updateItem(this._tripPointsData, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  }
+
   _renderPoint(point) {
-    const pointPresenter = new PointPresenter(this._pointsListComponent);
+    const pointPresenter = new PointPresenter(this._pointsListComponent, this._handlePointChange);
     pointPresenter.init(point);
+    this._pointPresenter[point.id] = pointPresenter;
   }
 
   _renderPoints() {
     this._tripPointsData.forEach((point) => this._renderPoint(point));
+  }
+
+  _clearPoints() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((presenter) => presenter.destroy());
+    this._pointPresenter = {};
   }
 
   _renderMessage() {

@@ -70,6 +70,9 @@ export const replace = (newChild, oldChild) => {
 };
 
 
+/**
+ * Функция удаления элемента
+ */
 export const remove = (component) => {
   if (component === null) {
     return;
@@ -84,3 +87,20 @@ export const remove = (component) => {
 };
 
 
+/**
+ * Функция обновления элемента в массиве
+ * @returns array - возвращает массив с обновленным значением
+ */
+export const updateItem = (items, update) => {
+  const index = items.findIndex((item) => item.id === update.id);
+
+  if (index === -1) {
+    return items;
+  }
+
+  return [
+    ...items.slice(0, index),
+    update,
+    ...items.slice(index + 1),
+  ];
+};
