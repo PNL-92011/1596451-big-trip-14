@@ -1,15 +1,17 @@
 import EditFormView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
-import { render, RenderPosition, replace, remove } from '../util/render.js';
+import { render, RenderPosition, replace, remove, Mode } from '../util/render.js';
 
 
 export default class Point {
-  constructor(pointListContainer, handlePointFavorite) {
+  constructor(pointListContainer, handlePointFavorite, changeMode) {
     this._pointListContainer = pointListContainer;
     this._handlePointFavorite = handlePointFavorite;
+    this._changeMode = changeMode;
 
     this._pointComponent = null;
     this._pointEditComponent = null;
+    this._mode = Mode.DEFAULT;
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
@@ -38,15 +40,14 @@ export default class Point {
       return;
     }
 
-    /** Проверка на наличие в DOM необходима, */
-    /** чтобы не пытаться заменить то, что не было отрисовано */
-    if (this._pointListContainer.getElement().contains(prevPointComponent.getElement())) {
+    if (this._mode === Mode.DEFAULT) {
       replace(this._pointComponent, prevPointComponent);
     }
 
-    if (this._pointListContainer.getElement().contains(prevPointEditComponent.getElement())) {
+    if (this._mode === Mode.EDITING) {
       replace(this._pointEditComponent, prevPointEditComponent);
     }
+
     remove(prevPointComponent);
     remove(prevPointEditComponent);
   }
@@ -56,14 +57,23 @@ export default class Point {
     remove(this._pointEditComponent);
   }
 
+  resetView() {
+    if (this._mode !== Mode.DEFAULT) {
+      this._replaceEditFormToPoint();
+    }
+  }
+
   _replacePointToEditForm() {
     replace(this._pointEditComponent, this._pointComponent);
     document.addEventListener('keydown', this._escKeyDownHandler);
+    this._changeMode();
+    this._mode = Mode.EDITING;
   }
 
   _replaceEditFormToPoint() {
     replace(this._pointComponent, this._pointEditComponent);
     document.removeEventListener('keydown', this._escKeyDownHandler);
+    this._mode = Mode.DEFAULT;
   }
 
   _escKeyDownHandler(evt) {

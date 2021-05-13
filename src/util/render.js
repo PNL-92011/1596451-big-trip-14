@@ -5,10 +5,10 @@ export const RenderPosition = {
   BEFOREEND: 'beforeend',
 };
 
-// export const Mode = {
-//   DEFAULT: 'DEFAULT',
-//   EDITING: 'EDITING',
-// };
+export const Mode = {
+  DEFAULT: 'DEFAULT',
+  EDITING: 'EDITING',
+};
 
 /**
  * Вспомогательная функция для отрисовки компонентов на странице
