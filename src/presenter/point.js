@@ -1,6 +1,7 @@
 import EditFormView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
-import { render, RenderPosition, replace, remove, Mode } from '../util/render.js';
+import { render, replace, remove } from '../util/render.js';
+import { RenderPosition, Mode } from '../util/common.js';
 
 
 export default class Point {

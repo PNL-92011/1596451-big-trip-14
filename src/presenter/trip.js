@@ -4,7 +4,8 @@ import FilterView from '../view/trip-filters.js';
 import PointsListView from '../view/trip-point-list.js';
 import TripInfoView from '../view/trip-info.js';
 import NewPointView from '../view/trip-point-new.js';
-import { render, RenderPosition, updateItem } from '../util/render.js';
+import { render, updateItem, sortDay, sortTime, sortPrice } from '../util/render.js';
+import { RenderPosition, SortType } from '../util/common.js';
 import PointPresenter from '../presenter/point.js';
 
 
@@ -14,6 +15,7 @@ export default class Trip {
     this._tripInfoContainer = tripInfoContainer;
     this._tripFilterContainer = tripFilterContainer;
     this._tripMenuContainer = tripMenuContainer;
+    this._currentSortType = SortType.DEFAULT;
 
     this._pointsListComponent = new PointsListView();
     this._menuComponent = new MenuView();
@@ -26,16 +28,57 @@ export default class Trip {
 
     this._handlePointChange = this._handlePointChange.bind(this);
     this._handleModeChange = this._handleModeChange.bind(this);
+    this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
   }
 
   init(tripPointsData) {
-    this._tripPointsData = tripPointsData.slice();
+    this._tripPointsData = tripPointsData;
+    this._sourcedPoints = tripPointsData.slice();   /** сохранение исходного порядка ТМ */
+
     this._renderTrip();
     this._renderList();
   }
 
+
+  _sortPoints(sortType) {
+    switch (sortType) {
+      case SortType.DEFAULT:
+        this._tripPointsData.sort(sortDay);
+        break;
+      case SortType.TIME:
+        this._tripPointsData.sort(sortTime);
+        break;
+      case SortType.PRICE:
+        this._tripPointsData.sort(sortPrice);
+        break;
+      default:
+        this._tripPointsData = this._sourcedPoints.slice();
+    }
+
+    this._currentSortType = SortType;
+  }
+
+
+  _handleSortTypeChange(sortType) {
+    /** проверка текущего типа сортировки */
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    /** сортировка ТМ */
+    this._sortPoints(sortType);
+
+    /** очистка ТМ */
+    this._clearPoints();
+
+    /** рендерим ТМ заново */
+    this._renderPoints();
+  }
+
+
   _renderSort() {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
+    this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
   }
 
   _renderTripInfo() {
