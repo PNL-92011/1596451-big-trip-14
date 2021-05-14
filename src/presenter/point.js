@@ -5,9 +5,9 @@ import { RenderPosition, Mode } from '../util/common.js';
 
 
 export default class Point {
-  constructor(pointListContainer, handlePointFavorite, changeMode) {
+  constructor(pointListContainer, changeData, changeMode) {
     this._pointListContainer = pointListContainer;
-    this._handlePointFavorite = handlePointFavorite;
+    this._changeData = changeData;
     this._changeMode = changeMode;
 
     this._pointComponent = null;
@@ -85,7 +85,7 @@ export default class Point {
   }
 
   _handleFavoriteClick() {
-    this._handlePointFavorite(
+    this._changeData(
       Object.assign(
         {},
         this._point,
@@ -102,6 +102,6 @@ export default class Point {
 
   _handleFormSubmit() {
     this._replaceEditFormToPoint();
-    this._handlePointFavorite(this._point);
+    this._changeData(this._point);
   }
 }
