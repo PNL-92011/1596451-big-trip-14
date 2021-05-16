@@ -1,14 +1,7 @@
+import { RenderPosition } from '../util/common.js';
 import Abstract from '../view/abstract.js';
+import dayjs from 'dayjs';
 
-export const RenderPosition = {
-  AFTERBEGIN: 'afterbegin',
-  BEFOREEND: 'beforeend',
-};
-
-export const Mode = {
-  DEFAULT: 'DEFAULT',
-  EDITING: 'EDITING',
-};
 
 /**
  * Вспомогательная функция для отрисовки компонентов на странице
@@ -41,16 +34,14 @@ export const render = (container, element, place) => {
  * @return {object} DOM-элемент
  */
 export const createDomElement = (template) => {
-  const newElement = document.createElement('div');   // 1. создаём пустой div-блок
-  newElement.innerHTML = template;                    // 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент
+  const newElement = document.createElement('div');   /** 1. создаём пустой div-блок */
+  newElement.innerHTML = template;                    /** 2. берём HTML в виде строки и вкладываем в этот div-блок, превращая в DOM-элемент */
 
-  return newElement.firstElementChild;                // 3. возвращаем этот DOM-элемент
+  return newElement.firstElementChild;                /** 3. возвращаем этот DOM-элемент */
 };
 
 
-/**
- * Функция замены одного элемента на другой
- */
+/** Функция замены одного элемента на другой */
 export const replace = (newChild, oldChild) => {
   if (oldChild instanceof Abstract) {
     oldChild = oldChild.getElement();
@@ -70,9 +61,7 @@ export const replace = (newChild, oldChild) => {
 };
 
 
-/**
- * Функция удаления элемента
- */
+/** Функция удаления элемента */
 export const remove = (component) => {
   if (component === null) {
     return;
@@ -104,3 +93,11 @@ export const updateItem = (items, update) => {
     ...items.slice(index + 1),
   ];
 };
+
+
+/** Функции сортировки */
+export const sortDay = (A, B) => dayjs(B.dateFrom).diff(dayjs(A.dateFrom));
+export const sortTime = (A, B) => dayjs(dayjs(B.dateTill).diff(dayjs(B.dateFrom))).diff(dayjs(dayjs(A.dateTill).diff(dayjs(A.dateFrom))));
+export const sortPrice = (A, B) => B.price - A.price;
+
+

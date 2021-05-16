@@ -1,5 +1,5 @@
 import { getRandomElement, getRandomInteger, generateNewArr, getShuffled} from './utils';
-import { TYPES, CITIES, DESCRIPTIONS, OFFERS } from '../util/point.js';
+import { TYPES, OFFERS } from '../util/point.js';
 
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -10,6 +10,22 @@ const PHOTO_AMOUNT_MIN = 1;
 const PHOTO_AMOUNT_MAX = 40;
 const PHOTO_URL = 'http://picsum.photos/248/152?r=';
 const MAX_OFFERS = 5;
+
+const CITIES = ['Chamonix', 'Rotterdam', 'Toulouse', 'Paris', 'Zurich', 'Madrid', 'Budapest', 'Izmir', 'Milan'];
+
+const DESCRIPTIONS = [
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
+  'Cras aliquet varius magna, non porta ligula feugiat eget.',
+  'Fusce tristique felis at fermentum pharetra.',
+  'Aliquam id orci ut lectus varius viverra.',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
+  'Sed sed nisi sed augue convallis suscipit in sed felis.',
+  'Aliquam erat volutpat.',
+  'Nunc fermentum tortor ac porta dapibus.',
+  'In rutrum ac purus sit amet tempus.',
+];
 
 
 /**
