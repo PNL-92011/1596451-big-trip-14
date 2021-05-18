@@ -1,7 +1,9 @@
 import dayjs from 'dayjs';
-import { TYPES, OFFERS } from '../util/point.js';
+import { TYPES, GROUP_OFFERS } from '../util/point.js';
 import { formatDateSlashTime } from '../util/date-format';
+import { getArrayByType } from '../util/render';
 import AbstractView from './abstract.js';
+
 
 const BLANK_POINT = {
   type: 'flight',
@@ -11,11 +13,12 @@ const BLANK_POINT = {
   price: '',
   id: '',
   photos: '',
+  offers: [],
 };
 
 
 const editPointForm = (pointData) => {
-  const {type, destination, dateFrom, dateTill, price, id, photos} = pointData;
+  const {type, destination, dateFrom, dateTill, price, id, photos, offers} = pointData;
 
   const checkboxTypes = TYPES.map((type) => {
     return `
@@ -26,16 +29,25 @@ const editPointForm = (pointData) => {
   }).join('');
 
 
-  const checkboxOffers = OFFERS.map((offer) => {
+  const checkboxOffers = (offer) => {
+    let checked = '';
+
+    if (offers.some((element) => element.name === offer.name)) {
+      checked  = 'checked';
+    }
+
     return `<div class="event__offer-selector">
-      <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.nickname}-${id}" type="checkbox" name="event-offer-${offer.nickname}">
-      <label class="event__offer-label" for="event-offer-${offer.nickname}-${id}">
-        <span class="event__offer-title">${offer.name}</span>
-        &plus;&euro;&nbsp;
-        <span class="event__offer-price">${offer.price}</span>
-      </label>
-    </div>`;
-  }).join('\n');
+    <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.nickname}-${id}" type="checkbox" name="event-offer-${offer.nickname}"${checked}>
+    <label class="event__offer-label" for="event-offer-${offer.nickname}-${id}">
+      <span class="event__offer-title">${offer.name}</span>
+       &plus;&euro;&nbsp;
+       <span class="event__offer-price">${offer.price}</span>
+     </label>
+   </div>`;
+  };
+
+  const offersByType = getArrayByType(GROUP_OFFERS, type);
+  const offerTemplate = offersByType.map((offer) => checkboxOffers(offer)).join('\n');
 
 
   const photosTemplate = photos.map((photo) => {
@@ -106,7 +118,7 @@ const editPointForm = (pointData) => {
       <section class="event__section  event__section--offers">
         <h3 class="event__section-title  event__section-title--offers">Offers</h3>
         <div class="event__available-offers">
-          ${checkboxOffers}
+          ${offerTemplate}
         </div>
       </section>
 
