@@ -56,15 +56,29 @@ export const generatePoint = () => {
   const dateTill = dayjs(dateFrom).add(getRandomInteger(30, 1400), 'minute').toDate();
   const type = getRandomElement(TYPES);
 
+  //   return {
+  //     type,
+  //     destination: {
+  //       city: getRandomElement(CITIES),
+  //       description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
+  //     },
+  //     dateFrom,
+  //     dateTill,
+  //     offers:  generateNewArr(GROUP_OFFERS[type], 5),
+  //     price: getRandomInteger(0, 100),
+  //     isFavorite: Boolean(getRandomInteger(0, 1)),
+  //     photos: generatePhotos(),
+  //     id: nanoid(),
+  //   };
+  // };
+
   return {
     type,
-    destination: {
-      city: getRandomElement(CITIES),
-      description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
-    },
+    city: getRandomElement(CITIES),
+    description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
     dateFrom,
     dateTill,
-    offers:  generateNewArr(GROUP_OFFERS[type]),
+    offers:  generateNewArr(GROUP_OFFERS[type], 5),
     price: getRandomInteger(0, 100),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     photos: generatePhotos(),
@@ -72,10 +86,9 @@ export const generatePoint = () => {
   };
 };
 
-
 const createMockPoints = (count) => {
   return new Array(count).fill(null).map(generatePoint);
 };
 
 
-export {createMockPoints};
+export { DESCRIPTIONS, createMockPoints, generatePhotos };

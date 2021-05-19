@@ -2,25 +2,30 @@ import dayjs from 'dayjs';
 import { TYPES, GROUP_OFFERS } from '../util/point.js';
 import { formatDateSlashTime } from '../util/date-format';
 import { getArrayByType } from '../util/render';
-import AbstractView from './abstract.js';
+//import AbstractView from './abstract.js';
+import SmartView from './smart.js';
+import { getShuffled } from '../mock/utils.js';
+import { DESCRIPTIONS, generatePhotos } from '../mock/point.js';
 
 
 const BLANK_POINT = {
   type: 'flight',
-  destination: '',
+  city: '',
   dateFrom: dayjs().format('DD/MM/YY 00:00'),
   dateTill: dayjs().format('DD/MM/YY 00:00'),
   price: '',
   id: '',
+  description: '',
   photos: '',
   offers: [],
+  isFavorite: false,
 };
 
 
 const editPointForm = (pointData) => {
-  const {type, destination, dateFrom, dateTill, price, id, photos, offers} = pointData;
+  const {type, city, dateFrom, dateTill, price, id, description, photos, offers} = pointData;
 
-  const checkboxTypes = TYPES.map((type) => {
+  const typeTemplate = TYPES.map((type) => {
     return `
       <div class="event__type-item">
         <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
@@ -35,6 +40,7 @@ const editPointForm = (pointData) => {
     if (offers.some((element) => element.name === offer.name)) {
       checked  = 'checked';
     }
+    // уточнить про checked
 
     return `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.nickname}-${id}" type="checkbox" name="event-offer-${offer.nickname}"${checked}>
@@ -50,7 +56,7 @@ const editPointForm = (pointData) => {
   const offerTemplate = offersByType.map((offer) => checkboxOffers(offer)).join('\n');
 
 
-  const photosTemplate = photos.map((photo) => {
+  const photoTemplate = photos.map((photo) => {
     return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
   }).join('');
 
@@ -69,7 +75,7 @@ const editPointForm = (pointData) => {
         <div class="event__type-list">
           <fieldset class="event__type-group">
             <legend class="visually-hidden">Event type</legend>
-            ${checkboxTypes}
+            ${typeTemplate}
           </fieldset>
         </div>
       </div>
@@ -79,7 +85,7 @@ const editPointForm = (pointData) => {
         <label class="event__label  event__type-output" for="event-destination-1">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${destination.city}" list="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
         <datalist id="destination-list-1">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
@@ -124,11 +130,11 @@ const editPointForm = (pointData) => {
 
       <section class="event__section  event__section--destination">
         <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${destination.description}</p>
+        <p class="event__destination-description">${description}</p>
 
         <div class="event__photos-container">
           <div class="event__photos-tape">
-          ${photosTemplate}
+          ${photoTemplate}
           </div>
         </div>
       </section>
@@ -139,14 +145,21 @@ const editPointForm = (pointData) => {
 };
 
 
-export default class EditForm extends AbstractView {
+// export default class EditForm extends AbstractView {
+export default class EditForm extends SmartView { ///
   constructor(point = BLANK_POINT) {
     super();
     this._point = point;
+    // this._pointData = EditForm.parsePointToData(point); ///
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._handleCancelClick = this._handleCancelClick.bind(this);
+
+    this._handleTypeChange = this._handleTypeChange.bind(this); //
+    this._handleCityChange = this._handleCityChange.bind(this); ///
+
+    this._setInnerHandlers();
   }
 
   getTemplate() {
@@ -187,4 +200,55 @@ export default class EditForm extends AbstractView {
     this._callback.clickCancel = callback;
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
   }
+
+  //
+  _handleTypeChange(evt) {
+    this.updateData({
+      type: evt.target.value,
+    });
+  }
+
+  /// уточнить !!!
+  ///
+  _handleCityChange(evt) {
+    this._updateDate({
+      city: evt.target.value,
+      description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
+      photos: generatePhotos(),
+    });
+  }
+
+  //
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
+    this.getElement().querySelector('#event-destination-1').addEventListener('change', this._handleCityChange); /// '#event-destination' - ???
+
+  }
+
+  //
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setClickSaveHandler(this._callback.formSubmit);
+    this.setClickCloseHandler(this._callback.editClick);
+  }
+
+  // //
+  // static parsePointToData(point) {
+  //   return Object.assign(
+  //     {},
+  //     point,
+  //     {
+  //       // ??
+
+  //     },
+  //   );
+  // }
+
+  // //
+  // static parseDataToPoint(pointData) {
+  //   pointData = Object.assign({}, pointData);
+
+  //   return pointData;
+  // }
+
 }

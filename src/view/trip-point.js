@@ -1,16 +1,23 @@
 import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration } from '../util/date-format.js';
 import AbstractView from './abstract.js';
+import { GROUP_OFFERS } from '../util/point.js';
+import { getArrayByType } from '../util/render';
+//import { generateNewArr } from './utils';
 
 const createTripPoint = (createMockPoints) => {
-  const {type, destination, dateFrom, dateTill, offers, price, isFavorite} = createMockPoints;
+  const {type, city, dateFrom, dateTill, price, isFavorite} = createMockPoints;
 
-  const createOffers = offers.map((offer) => {
+  const createOffers = (offer) => {
     return `<li class="event__offer">
-    <span class="event__offer-title">${offer.name}</span>
-    &plus;&euro;&nbsp;
-    <span class="event__offer-price">${offer.price}</span>
-  </li>`;
-  }).join('\n');
+      <span class="event__offer-title">${offer.name}</span>
+      &plus;&euro;&nbsp;
+      <span class="event__offer-price">${offer.price}</span>
+    </li>`;
+  };
+
+  const offersOfType = getArrayByType(GROUP_OFFERS, type);
+  //const offersOfType = generateNewArr(GROUP_OFFERS[type], 3);
+  const createOfferTemplate = offersOfType.map((offer) => createOffers(offer)).join('\n');
 
 
   return `<li class="trip-events__item">
@@ -22,7 +29,7 @@ const createTripPoint = (createMockPoints) => {
     </div>
 
 
-    <h3 class="event__title">${type} ${destination.city}</h3>
+    <h3 class="event__title">${type} ${city}</h3>
     <div class="event__schedule">
       <p class="event__time">
         <time class="event__start-time" datetime="${formatFullDate(dateFrom)}">${formatTimeOnly(dateFrom)}</time>
@@ -40,7 +47,7 @@ const createTripPoint = (createMockPoints) => {
 
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-     ${createOffers}
+     ${createOfferTemplate}
     </ul>
 
 

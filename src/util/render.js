@@ -95,6 +95,7 @@ export const updateItem = (items, update) => {
 };
 
 
+/** Функции ранжирования */
 export const getRanging = (a,b) => {
   if (a.dateFrom > b.dateFrom) {
     return 1;
