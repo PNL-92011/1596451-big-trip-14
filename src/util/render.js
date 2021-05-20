@@ -95,9 +95,28 @@ export const updateItem = (items, update) => {
 };
 
 
+/** Функции ранжирования */
+export const getRanging = (a,b) => {
+  if (a.dateFrom > b.dateFrom) {
+    return 1;
+  }
+  if (a.dateFrom < b.dateFrom) {
+    return -1;
+  }
+};
+
+
 /** Функции сортировки */
 export const sortDay = (A, B) => dayjs(B.dateFrom).diff(dayjs(A.dateFrom));
 export const sortTime = (A, B) => dayjs(dayjs(B.dateTill).diff(dayjs(B.dateFrom))).diff(dayjs(dayjs(A.dateTill).diff(dayjs(A.dateFrom))));
 export const sortPrice = (A, B) => B.price - A.price;
 
 
+/** Функция получения доп.опций в зависимости от типа события */
+export const getArrayByType = (array, type) => {
+  for (const key in array) {
+    if (key === type) {
+      return array[key];
+    }
+  }
+};

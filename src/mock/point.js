@@ -1,5 +1,5 @@
-import { getRandomElement, getRandomInteger, generateNewArr, getShuffled} from './utils';
-import { TYPES, OFFERS } from '../util/point.js';
+import { getRandomElement, getRandomInteger, getShuffled, generateNewArr } from './utils';
+import { TYPES, GROUP_OFFERS } from '../util/point.js';
 
 import dayjs from 'dayjs';
 import { nanoid } from 'nanoid';
@@ -9,7 +9,6 @@ const PHOTO_INDEX_MAX = 200;
 const PHOTO_AMOUNT_MIN = 1;
 const PHOTO_AMOUNT_MAX = 40;
 const PHOTO_URL = 'http://picsum.photos/248/152?r=';
-const MAX_OFFERS = 5;
 
 const CITIES = ['Chamonix', 'Rotterdam', 'Toulouse', 'Paris', 'Zurich', 'Madrid', 'Budapest', 'Izmir', 'Milan'];
 
@@ -55,16 +54,31 @@ export const generatePoint = () => {
 
   const dateFrom = dayjs().add(getRandomInteger(-7, 7), 'day').add(getRandomInteger(1, 600), 'minute').toDate();
   const dateTill = dayjs(dateFrom).add(getRandomInteger(30, 1400), 'minute').toDate();
+  const type = getRandomElement(TYPES);
+
+  //   return {
+  //     type,
+  //     destination: {
+  //       city: getRandomElement(CITIES),
+  //       description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
+  //     },
+  //     dateFrom,
+  //     dateTill,
+  //     offers:  generateNewArr(GROUP_OFFERS[type], 5),
+  //     price: getRandomInteger(0, 100),
+  //     isFavorite: Boolean(getRandomInteger(0, 1)),
+  //     photos: generatePhotos(),
+  //     id: nanoid(),
+  //   };
+  // };
 
   return {
-    type: getRandomElement(TYPES),
-    destination: {
-      city: getRandomElement(CITIES),
-      description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
-    },
+    type,
+    city: getRandomElement(CITIES),
+    description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
     dateFrom,
     dateTill,
-    offers: generateNewArr(OFFERS, MAX_OFFERS),
+    offers:  generateNewArr(GROUP_OFFERS[type], 5),
     price: getRandomInteger(0, 100),
     isFavorite: Boolean(getRandomInteger(0, 1)),
     photos: generatePhotos(),
@@ -72,10 +86,9 @@ export const generatePoint = () => {
   };
 };
 
-
 const createMockPoints = (count) => {
   return new Array(count).fill(null).map(generatePoint);
 };
 
 
-export {createMockPoints};
+export { DESCRIPTIONS, createMockPoints, generatePhotos };
