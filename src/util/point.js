@@ -1,6 +1,3 @@
-// const OFFER_AMOUNT_MIN = 0;
-// const OFFER_AMOUNT_MAX = 5;
-
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const OFFERS = {

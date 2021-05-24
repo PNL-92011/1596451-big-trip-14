@@ -1,29 +1,34 @@
-import dayjs from 'dayjs';
 import { TYPES, GROUP_OFFERS } from '../util/point.js';
 import { formatDateSlashTime } from '../util/date-format';
-import { getArrayByType } from '../util/render';
-//import AbstractView from './abstract.js';
+import { getArrayByType } from '../util/handle-functions.js';
 import SmartView from './smart.js';
-import { getShuffled } from '../mock/utils.js';
-import { DESCRIPTIONS, generatePhotos } from '../mock/point.js';
+import { DestinationArray } from '../mock/point.js';
+//import { getShuffled } from '../mock/utils.js';
 
 
 const BLANK_POINT = {
   type: 'flight',
-  city: '',
-  dateFrom: dayjs().format('DD/MM/YY 00:00'),
-  dateTill: dayjs().format('DD/MM/YY 00:00'),
-  price: '',
-  id: '',
-  description: '',
-  photos: '',
+  destination: {
+    description: '',
+    city: '',
+    photos: {
+      src: '',
+      description: '',
+    },
+  },
+  dateFrom: null,
+  dateTill: null,
   offers: [],
+  price: '',
   isFavorite: false,
+  id: '',
+
 };
 
 
-const editPointForm = (pointData) => {
-  const {type, city, dateFrom, dateTill, price, id, description, photos, offers} = pointData;
+const editPointForm = (data) => {
+  const {type, destination, dateFrom, dateTill, offers, price, id, isPictures, isDescription} = data;
+
 
   const typeTemplate = TYPES.map((type) => {
     return `
@@ -56,9 +61,49 @@ const editPointForm = (pointData) => {
   const offerTemplate = offersByType.map((offer) => checkboxOffers(offer)).join('\n');
 
 
-  const photoTemplate = photos.map((photo) => {
-    return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
-  }).join('');
+  // const photoTemplate = destination.photos.map((photo) => {
+  //   return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
+  // }).join('');
+
+  const destinationTemplate = () => {
+
+    const photoTemplate = () => {
+      if (isPictures) {
+        const images = destination.photos.map((photo) => {
+          return `
+          <img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
+        }).join('\n');
+
+        return `
+        <div class="event__photos-container">
+          <div class="event__photos-tape">
+          ${images}
+          </div>
+        </div>`;
+      }
+
+      return '';
+    };
+
+    const descriptionTemplate = () => {
+      if (isDescription) {
+        return `<p class="event__destination-description">${destination.description}</p>`;
+      }
+
+      return '';
+    };
+
+    if (isPictures || isDescription) {
+      return `
+      <section class="event__section  event__section--destination">
+      <h3 class="event__section-title  event__section-title--destination">Destination</h3>
+      ${descriptionTemplate()}
+      ${photoTemplate()}
+    </section>`;
+    }
+
+    return '';
+  };
 
 
   return `<li class="trip-events__item">
@@ -82,11 +127,11 @@ const editPointForm = (pointData) => {
 
 
       <div class="event__field-group  event__field-group--destination">
-        <label class="event__label  event__type-output" for="event-destination-1">
+        <label class="event__label  event__type-output" for="event-destination-${id}">
           ${type}
         </label>
-        <input class="event__input  event__input--destination" id="event-destination-1" type="text" name="event-destination" value="${city}" list="destination-list-1">
-        <datalist id="destination-list-1">
+        <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.city}" list="destination-list-${id}">
+        <datalist id="destination-list-${id}">
           <option value="Amsterdam"></option>
           <option value="Geneva"></option>
           <option value="Chamonix"></option>
@@ -95,20 +140,20 @@ const editPointForm = (pointData) => {
 
 
       <div class="event__field-group  event__field-group--time">
-        <label class="visually-hidden" for="event-start-time-1">From</label>
-        <input class="event__input  event__input--time" id="event-start-time-1" type="text" name="event-start-time" value="${formatDateSlashTime(dateFrom)}">
+        <label class="visually-hidden" for="event-start-time-${id}">From</label>
+        <input class="event__input  event__input--time" id="event-start-time-${id}" type="text" name="event-start-time" value="${formatDateSlashTime(dateFrom)}">
         &mdash;
-        <label class="visually-hidden" for="event-end-time-1">To</label>
-        <input class="event__input  event__input--time" id="event-end-time-1" type="text" name="event-end-time" value="${formatDateSlashTime(dateTill)}">
+        <label class="visually-hidden" for="event-end-time-${id}">To</label>
+        <input class="event__input  event__input--time" id="event-end-time-${id}" type="text" name="event-end-time" value="${formatDateSlashTime(dateTill)}">
       </div>
 
 
       <div class="event__field-group  event__field-group--price">
-        <label class="event__label" for="event-price-1">
+        <label class="event__label" for="event-price-${id}">
           <span class="visually-hidden">Price</span>
           &euro;
         </label>
-        <input class="event__input  event__input--price" id="event-price-1" type="text" name="event-price" value="${price}">
+        <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
       </div>
 
       <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
@@ -128,16 +173,7 @@ const editPointForm = (pointData) => {
         </div>
       </section>
 
-      <section class="event__section  event__section--destination">
-        <h3 class="event__section-title  event__section-title--destination">Destination</h3>
-        <p class="event__destination-description">${description}</p>
-
-        <div class="event__photos-container">
-          <div class="event__photos-tape">
-          ${photoTemplate}
-          </div>
-        </div>
-      </section>
+      ${destinationTemplate()}
 
     </section>
   </form>
@@ -146,42 +182,42 @@ const editPointForm = (pointData) => {
 
 
 // export default class EditForm extends AbstractView {
-export default class EditForm extends SmartView { ///
+export default class EditForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
-    this._point = point;
-    // this._pointData = EditForm.parsePointToData(point); ///
+    //this._point = point;
+    this._data = EditForm.parsePointToData(point);
 
     this._handleEditClick = this._handleEditClick.bind(this);
-    this._handleFormSubmit = this._handleFormSubmit.bind(this);
+    this._handleSaveClick = this._handleSaveClick.bind(this);
     this._handleCancelClick = this._handleCancelClick.bind(this);
 
-    this._handleTypeChange = this._handleTypeChange.bind(this); //
-    this._handleCityChange = this._handleCityChange.bind(this); ///
+    this._handleTypeChange = this._handleTypeChange.bind(this);
+    this._handleCityChange = this._handleCityChange.bind(this);
 
     this._setInnerHandlers();
   }
 
   getTemplate() {
-    return editPointForm(this._point);
+    return editPointForm(this._data);
   }
 
   /** обработчик на Save */
-  _handleFormSubmit(evt) {
+  _handleSaveClick(evt) {
     evt.preventDefault();
-    this._callback.formSubmit(this._point);
+    this._callback.saveClick(EditForm.parsePointToData(this._data));
   }
 
   setClickSaveHandler(callback) {
-    this._callback.formSubmit = callback;
-    this.getElement().querySelector('form').addEventListener('submit', this._handleFormSubmit);
+    this._callback.saveClick = callback;
+    this.getElement().querySelector('form').addEventListener('submit', this._handleSaveClick);
   }
 
 
   /** обработчик на стрелку закрытия формы */
   _handleEditClick(evt) {
     evt.preventDefault();
-    this._callback.editClick(this._point);
+    this._callback.editClick();
   }
 
   setClickCloseHandler(callback) {
@@ -201,54 +237,66 @@ export default class EditForm extends SmartView { ///
     this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
   }
 
-  //
+  /** обработчик на смену типа события */
   _handleTypeChange(evt) {
-    this.updateData({
+    this._updateData({
       type: evt.target.value,
+      offers: [],
     });
   }
 
-  /// уточнить !!!
-  ///
+  /** обработчик на смену города */
   _handleCityChange(evt) {
-    this._updateDate({
-      city: evt.target.value,
-      description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
-      photos: generatePhotos(),
+    this._updateData({
+      destination: {
+        city: evt.target.value,
+        description: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].description,
+        photos: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].photos,
+      },
+      isPictures: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].photos.length !== 0,
+      isDescription: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].description.length !== 0,
     });
   }
 
-  //
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
-    this.getElement().querySelector('#event-destination-1').addEventListener('change', this._handleCityChange); /// '#event-destination' - ???
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
 
   }
 
-  //
   restoreHandlers() {
     this._setInnerHandlers();
-    this.setClickSaveHandler(this._callback.formSubmit);
+    this.setClickSaveHandler(this._callback.saveClick);
     this.setClickCloseHandler(this._callback.editClick);
   }
 
-  // //
-  // static parsePointToData(point) {
-  //   return Object.assign(
-  //     {},
-  //     point,
-  //     {
-  //       // ??
 
-  //     },
-  //   );
-  // }
+  static parsePointToData(point) {
+    return Object.assign(
+      {},
+      point,
+      {
+        isPictures: point.destination.photos.length !==0,
+        isDescription: point.destination.description.length !==0,
+      },
+    );
+  }
 
-  // //
-  // static parseDataToPoint(pointData) {
-  //   pointData = Object.assign({}, pointData);
 
-  //   return pointData;
-  // }
+  static parseDataToPoint(data) {
+    data = Object.assign({}, data);
 
+    if (!data.isPictures) {
+      data.destination.photos = '';
+    }
+
+    if (!data.isDescription) {
+      data.destination.description = '';
+    }
+
+    delete data.isPictures;
+    delete data.isDescription;
+
+    return data;
+  }
 }

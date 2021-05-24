@@ -4,7 +4,9 @@ import FilterView from '../view/trip-filters.js';
 import PointsListView from '../view/trip-point-list.js';
 import TripInfoView from '../view/trip-info.js';
 import NewPointView from '../view/trip-point-new.js';
-import { render, updateItem, sortDay, sortTime, sortPrice } from '../util/render.js';
+import { render } from '../util/render.js';
+import { sortDay, sortTime, sortPrice } from '../util/sort-functions.js';
+import { updateItem } from '../util/handle-functions.js';
 import { RenderPosition, SortType } from '../util/common.js';
 import PointPresenter from '../presenter/point.js';
 
@@ -59,23 +61,6 @@ export default class Trip {
   }
 
 
-  _handleSortTypeChange(sortType) {
-    /** проверка текущего типа сортировки */
-    if (this._currentSortType === sortType) {
-      return;
-    }
-
-    /** сортировка ТМ */
-    this._sortPoints(sortType);
-
-    /** очистка ТМ */
-    this._clearPoints();
-
-    /** рендерим ТМ заново */
-    this._renderPoints();
-  }
-
-
   _renderSort() {
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
@@ -96,17 +81,6 @@ export default class Trip {
   _renderList() {
     render(this._tripContainer, this._pointsListComponent, RenderPosition.BEFOREEND);
     this._renderPoints();
-  }
-
-  _handleModeChange() {
-    Object
-      .values(this._pointPresenter)
-      .forEach((presenter) => presenter.resetView());
-  }
-
-  _handlePointChange(updatedPoint) {
-    this._tripPointsData = updateItem(this._tripPointsData, updatedPoint);
-    this._pointPresenter[updatedPoint.id].init(updatedPoint);
   }
 
   _renderPoint(point) {
@@ -140,6 +114,34 @@ export default class Trip {
     this._renderMenu();
     this._renderFilter();
     this._renderSort();
+  }
+
+
+  _handleModeChange() {
+    Object
+      .values(this._pointPresenter)
+      .forEach((pointPresenter) => pointPresenter.resetView());
+  }
+
+  _handlePointChange(updatedPoint) {
+    this._tripPointsData = updateItem(this._tripPointsData, updatedPoint);
+    this._pointPresenter[updatedPoint.id].init(updatedPoint);
+  }
+
+  _handleSortTypeChange(sortType) {
+    /** проверка текущего типа сортировки */
+    if (this._currentSortType === sortType) {
+      return;
+    }
+
+    /** сортировка ТМ */
+    this._sortPoints(sortType);
+
+    /** очистка ТМ */
+    this._clearPoints();
+
+    /** рендерим ТМ заново */
+    this._renderPoints();
   }
 }
 

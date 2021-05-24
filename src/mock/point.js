@@ -1,8 +1,12 @@
-import { getRandomElement, getRandomInteger, getShuffled, generateNewArr } from './utils';
-import { TYPES, GROUP_OFFERS } from '../util/point.js';
-
 import dayjs from 'dayjs';
+import { getRandomElement, getRandomInteger } from './utils';
+import { TYPES } from '../util/point.js';
 import { nanoid } from 'nanoid';
+
+//import { getShuffled } from './utils';
+//import { OFFERS } from '../util/point.js';
+import { GROUP_OFFERS } from '../util/point.js';
+import { generateNewArr } from './utils';
 
 const PHOTO_INDEX_MIN = 50;
 const PHOTO_INDEX_MAX = 200;
@@ -13,26 +17,22 @@ const PHOTO_URL = 'http://picsum.photos/248/152?r=';
 const CITIES = ['Chamonix', 'Rotterdam', 'Toulouse', 'Paris', 'Zurich', 'Madrid', 'Budapest', 'Izmir', 'Milan'];
 
 const DESCRIPTIONS = [
-  'Lorem ipsum dolor sit amet, consectetur adipiscing elit.',
-  'Cras aliquet varius magna, non porta ligula feugiat eget.',
-  'Fusce tristique felis at fermentum pharetra.',
-  'Aliquam id orci ut lectus varius viverra.',
-  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante.',
-  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum.',
-  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui.',
-  'Sed sed nisi sed augue convallis suscipit in sed felis.',
-  'Aliquam erat volutpat.',
-  'Nunc fermentum tortor ac porta dapibus.',
-  'In rutrum ac purus sit amet tempus.',
+  'Lorem ipsum dolor sit amet, consectetur adipiscing elit. ',
+  'Cras aliquet varius magna, non porta ligula feugiat eget. ',
+  'Fusce tristique felis at fermentum pharetra. ',
+  'Aliquam id orci ut lectus varius viverra. ',
+  'Nullam nunc ex, convallis sed finibus eget, sollicitudin eget ante. ',
+  'Phasellus eros mauris, condimentum sed nibh vitae, sodales efficitur ipsum. ',
+  'Sed blandit, eros vel aliquam faucibus, purus ex euismod diam, eu luctus nunc ante ut dui. ',
+  'Sed sed nisi sed augue convallis suscipit in sed felis. ',
+  'Aliquam erat volutpat. ',
+  'Nunc fermentum tortor ac porta dapibus. ',
+  'In rutrum ac purus sit amet tempus. ',
 ];
 
-
 /**
- * Функция создания набора фотографий
- * @return {array} — массив фото
- */
+ * Функция создания набора фотографий */
 const generatePhotos = () => {
-
   const pictures = new Array(getRandomInteger(PHOTO_AMOUNT_MIN, PHOTO_AMOUNT_MAX)).fill().map(() => `${PHOTO_URL}${getRandomInteger(PHOTO_INDEX_MIN, PHOTO_INDEX_MAX)}`);
 
   const createPhoto = () => {
@@ -45,6 +45,15 @@ const generatePhotos = () => {
   return new Array(getRandomInteger(1, 5)).fill().map(createPhoto);
 };
 
+const generateDestination = (city) => {
+  return {
+    description: generateNewArr(DESCRIPTIONS).slice(0, (getRandomInteger(0, 5))).join(' '),
+    city: city,
+    photos: generatePhotos(),
+  };
+};
+
+export const DestinationArray = CITIES.map((city) => generateDestination(city));
 
 /**
  * Функция генерирования точки маршрута
@@ -56,39 +65,44 @@ export const generatePoint = () => {
   const dateTill = dayjs(dateFrom).add(getRandomInteger(30, 1400), 'minute').toDate();
   const type = getRandomElement(TYPES);
 
-  //   return {
-  //     type,
-  //     destination: {
-  //       city: getRandomElement(CITIES),
-  //       description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
-  //     },
-  //     dateFrom,
-  //     dateTill,
-  //     offers:  generateNewArr(GROUP_OFFERS[type], 5),
-  //     price: getRandomInteger(0, 100),
-  //     isFavorite: Boolean(getRandomInteger(0, 1)),
-  //     photos: generatePhotos(),
-  //     id: nanoid(),
-  //   };
-  // };
-
   return {
     type,
-    city: getRandomElement(CITIES),
-    description: getShuffled(DESCRIPTIONS).slice(0, 5).join(' '),
+    destination: getRandomElement(DestinationArray),
     dateFrom,
     dateTill,
-    offers:  generateNewArr(GROUP_OFFERS[type], 5),
+    offers:  generateNewArr(GROUP_OFFERS[type]).slice(0, 2),
     price: getRandomInteger(0, 100),
     isFavorite: Boolean(getRandomInteger(0, 1)),
-    photos: generatePhotos(),
     id: nanoid(),
   };
 };
 
-const createMockPoints = (count) => {
+export const createMockPoints = (count) => {
   return new Array(count).fill(null).map(generatePoint);
 };
 
 
-export { DESCRIPTIONS, createMockPoints, generatePhotos };
+// For deleting
+// ==========================
+
+
+// Experiment
+// import { DESTINATIONS } from './collections.js';
+// import { offersGroup } from './collections.js';
+
+// /** Функция выбора случайного направления */
+// /** описание и фото прилагаются к пункту назначения */
+// const generateDestination = () => {
+//   const randomDestination = getRandomInteger(0, DESTINATIONS.length - 1);
+//   return DESTINATIONS[randomDestination];
+// };
+
+
+// /** Функция генерирования доп.опций по типу события */
+// const generateOffers = (offersGroup, type) => {
+//   const offersByType = offersGroup.filter((offer) => {
+//     return offer.type === type;
+//   });
+
+//   return offersByType.offersGroup;
+// };
