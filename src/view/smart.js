@@ -24,7 +24,7 @@ export default class Smart extends Abstract {
   }
 
 
-  _updateData(update, justDataUpdating) {
+  updateData(update, justDataUpdating) {
     if (!update) {
       return;
     }

@@ -4,6 +4,8 @@ import { getArrayByType } from '../util/handle-functions.js';
 import SmartView from './smart.js';
 import { DestinationArray } from '../mock/point.js';
 //import { getShuffled } from '../mock/utils.js';
+//import { CITIES, DESCRIPTIONS, generatePhotos } from '../mock/point.js';
+//import { getRandomInteger } from '../mock/utils.js';
 
 
 const BLANK_POINT = {
@@ -59,11 +61,6 @@ const editPointForm = (data) => {
 
   const offersByType = getArrayByType(GROUP_OFFERS, type);
   const offerTemplate = offersByType.map((offer) => checkboxOffers(offer)).join('\n');
-
-
-  // const photoTemplate = destination.photos.map((photo) => {
-  //   return `<img class="event__photo" src="${photo.src}" alt="${photo.description}">`;
-  // }).join('');
 
   const destinationTemplate = () => {
 
@@ -239,15 +236,31 @@ export default class EditForm extends SmartView {
 
   /** обработчик на смену типа события */
   _handleTypeChange(evt) {
-    this._updateData({
+    this.updateData({
       type: evt.target.value,
       offers: [],
     });
   }
 
   /** обработчик на смену города */
+  // _handleCityChange(evt) {
+  //   if(!CITIES.includes(evt.target.value)) {
+  //     evt.target.value = '';
+  //     return;
+  //   }
+
+  //   this.updateData({
+  //     destination: {
+  //       city: evt.target.value,
+  //       description: getRandomInteger(0, DESCRIPTIONS.length - 1),
+  //       photos: generatePhotos(),
+  //     },
+  //   });
+  // }
+
+  /** обработчик на смену города */
   _handleCityChange(evt) {
-    this._updateData({
+    this.updateData({
       destination: {
         city: evt.target.value,
         description: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].description,
@@ -257,6 +270,7 @@ export default class EditForm extends SmartView {
       isDescription: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].description.length !== 0,
     });
   }
+
 
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
