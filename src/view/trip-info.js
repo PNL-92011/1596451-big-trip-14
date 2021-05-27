@@ -47,15 +47,15 @@ const getDateRoute = (points) => {
 
 const getCostRoute = (points) => {
 
-  const basicCost = points.map((point) => point.price).reduce((accumulator, price) => accumulator + price);
+  // const basicCost = points.map((point) => point.price).reduce((accumulator, price) => accumulator + price);
 
-  // const offersCost = points.map((point) => point.offers.map((offer) => offer.price)
-  //   .reduce((accumulator, price) => accumulator + price))
-  //   .reduce((accumulator, offerPrice) => accumulator + offerPrice);
+  const offersCost = points.map((point) => point.offers.map((offer) => offer.price)
+    .reduce((accumulator, price) => accumulator + price))
+    .reduce((accumulator, offerPrice) => accumulator + offerPrice);
 
   return `
   <p class="trip-info__cost">
-   Total: &euro;&nbsp;<span class="trip-info__cost-value">${basicCost}</span>
+   Total: &euro;&nbsp;<span class="trip-info__cost-value">${offersCost}</span>
  </p>`;
 };
 

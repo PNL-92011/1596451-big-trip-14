@@ -2,7 +2,7 @@ import { TYPES, GROUP_OFFERS } from '../util/point.js';
 import { formatDateSlashTime } from '../util/date-format';
 import { getArrayByType } from '../util/handle-functions.js';
 import SmartView from './smart.js';
-import { DestinationArray } from '../mock/point.js';
+import { Destinations } from '../mock/point.js';
 //import { getShuffled } from '../mock/utils.js';
 //import { CITIES, DESCRIPTIONS, generatePhotos } from '../mock/point.js';
 //import { getRandomInteger } from '../mock/utils.js';
@@ -129,9 +129,7 @@ const editPointForm = (data) => {
         </label>
         <input class="event__input  event__input--destination" id="event-destination-${id}" type="text" name="event-destination" value="${destination.city}" list="destination-list-${id}">
         <datalist id="destination-list-${id}">
-          <option value="Amsterdam"></option>
-          <option value="Geneva"></option>
-          <option value="Chamonix"></option>
+          ${Destinations.map((destination) => `<option value="${destination.city}"></option>`).join('')}
         </datalist>
       </div>
 
@@ -243,37 +241,22 @@ export default class EditForm extends SmartView {
   }
 
   /** обработчик на смену города */
-  // _handleCityChange(evt) {
-  //   if(!CITIES.includes(evt.target.value)) {
-  //     evt.target.value = '';
-  //     return;
-  //   }
-
-  //   this.updateData({
-  //     destination: {
-  //       city: evt.target.value,
-  //       description: getRandomInteger(0, DESCRIPTIONS.length - 1),
-  //       photos: generatePhotos(),
-  //     },
-  //   });
-  // }
-
-  /** обработчик на смену города */
   _handleCityChange(evt) {
+    const cityIndex = Destinations.findIndex((destination) => destination.city === evt.target.value);
     this.updateData({
       destination: {
         city: evt.target.value,
-        description: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].description,
-        photos: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].photos,
+        description: Destinations[cityIndex].description,
+        photos: Destinations[cityIndex].photos,
       },
-      isPictures: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].photos.length !== 0,
-      isDescription: DestinationArray[DestinationArray.findIndex((item) => item.city === evt.target.value)].description.length !== 0,
+      isPictures: Destinations[cityIndex].photos.length !== 0,
+      isDescription: Destinations[cityIndex].description.length !== 0,
     });
   }
 
 
   _setInnerHandlers() {
-    this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
+    this.getElement().querySelector('.event__type-input').addEventListener('change', this._handleTypeChange);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
 
   }

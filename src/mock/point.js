@@ -53,7 +53,7 @@ const generateDestination = (city) => {
   };
 };
 
-export const DestinationArray = CITIES.map((city) => generateDestination(city));
+export const Destinations = CITIES.map((city) => generateDestination(city));
 
 /**
  * Функция генерирования точки маршрута
@@ -67,7 +67,7 @@ export const generatePoint = () => {
 
   return {
     type,
-    destination: getRandomElement(DestinationArray),
+    destination: getRandomElement(Destinations),
     dateFrom,
     dateTill,
     offers:  generateNewArr(GROUP_OFFERS[type]).slice(0, 2),
