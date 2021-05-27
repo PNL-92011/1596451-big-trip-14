@@ -3,9 +3,7 @@ import { formatDateSlashTime } from '../util/date-format';
 import { getArrayByType } from '../util/handle-functions.js';
 import SmartView from './smart.js';
 import { Destinations } from '../mock/point.js';
-//import { getShuffled } from '../mock/utils.js';
-//import { CITIES, DESCRIPTIONS, generatePhotos } from '../mock/point.js';
-//import { getRandomInteger } from '../mock/utils.js';
+import { nanoid } from 'nanoid';
 
 
 const BLANK_POINT = {
@@ -32,11 +30,12 @@ const editPointForm = (data) => {
   const {type, destination, dateFrom, dateTill, offers, price, id, isPictures, isDescription} = data;
 
 
-  const typeTemplate = TYPES.map((type) => {
+  const typeTemplate = TYPES.map((typeRadio) => {
+    const id = nanoid();
     return `
       <div class="event__type-item">
-        <input id="event-type-${type}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${type}">
-        <label class="event__type-label  event__type-label--${type}" for="event-type-taxi-${id}">${type}</label>
+        <input id="event-type-${typeRadio}-${id}" class="event__type-input  visually-hidden" type="radio" name="event-type" value="${typeRadio}" ${(typeRadio === type) ? 'checked' : ''}>
+        <label class="event__type-label  event__type-label--${typeRadio}" for="event-type-${typeRadio}-${id}">${typeRadio}</label>
       </div>`;
   }).join('');
 
@@ -234,11 +233,28 @@ export default class EditForm extends SmartView {
 
   /** обработчик на смену типа события */
   _handleTypeChange(evt) {
-    this.updateData({
-      type: evt.target.value,
-      offers: [],
-    });
+    if (evt.target.classList.contains('event__type-input')) {
+      this.updateData({
+        type: evt.target.value,
+        offers: [],
+      });
+    }
   }
+
+
+  // _handleTypeChange(evt) {
+  //   evt.preventDefault();
+  //   this.updateData(
+  //     {
+  //       offers:[],
+  //     },
+  //   ),
+  //   this.updateData({
+  //     type: evt.target.value,
+  //   });
+  //   this._offers = [];
+  // }
+
 
   /** обработчик на смену города */
   _handleCityChange(evt) {
@@ -256,9 +272,8 @@ export default class EditForm extends SmartView {
 
 
   _setInnerHandlers() {
-    this.getElement().querySelector('.event__type-input').addEventListener('change', this._handleTypeChange);
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
-
   }
 
   restoreHandlers() {
