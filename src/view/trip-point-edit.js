@@ -27,7 +27,7 @@ const BLANK_POINT = {
 
 
 const editPointForm = (data) => {
-  const {type, destination, dateFrom, dateTill, offers, price, id, isPictures, isDescription} = data;
+  const {type, destination, dateFrom, dateTill, offers, price, id, isPictures, isDescription, isDisabled, isSaving, isDeleting} = data;
 
 
   const typeTemplate = TYPES.map((typeRadio) => {
@@ -46,7 +46,6 @@ const editPointForm = (data) => {
     if (offers.some((element) => element.name === offer.name)) {
       checked  = 'checked';
     }
-    // уточнить про checked
 
     return `<div class="event__offer-selector">
     <input class="event__offer-checkbox  visually-hidden" id="event-offer-${offer.nickname}-${id}" type="checkbox" name="event-offer-${offer.nickname}"${checked}>
@@ -150,10 +149,9 @@ const editPointForm = (data) => {
         <input class="event__input  event__input--price" id="event-price-${id}" type="text" name="event-price" value="${price}">
       </div>
 
-      <button class="event__save-btn  btn  btn--blue" type="submit">Save</button>
-      <button class="event__reset-btn" type="reset">Cancel</button>
-      <button class="event__reset-btn visually-hidden" type="reset">Delete</button>
-      <button class="event__rollup-btn" type="button">
+      <button class="event__save-btn  btn  btn--blue" type="submit" ${isDisabled ? 'disabled' : ''}>${isSaving ? 'Saving...' : 'Save'}</button>
+      <button class="event__reset-btn" type="reset" ${isDisabled ? 'disabled' : ''}>${isDeleting ? 'Deleting...' : 'Delete'}</button>
+      <button class="event__rollup-btn" type="button" ${isDisabled ? 'disabled' : ''}>
         <span class="visually-hidden">Open event</span>
       </button>
     </header>
@@ -179,15 +177,19 @@ const editPointForm = (data) => {
 export default class EditForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
-    //this._point = point;
     this._data = EditForm.parsePointToData(point);
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleSaveClick = this._handleSaveClick.bind(this);
     this._handleCancelClick = this._handleCancelClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
 
     this._handleTypeChange = this._handleTypeChange.bind(this);
     this._handleCityChange = this._handleCityChange.bind(this);
+    this._handlePriceChange = this._handlePriceChange.bind(this);
+    // this._handleOffersChange = this._handleOffersChange.bind(this);
+
+    // dateChange
 
     this._setInnerHandlers();
   }
@@ -196,10 +198,17 @@ export default class EditForm extends SmartView {
     return editPointForm(this._data);
   }
 
-  /** обработчик на Save */
-  _handleSaveClick(evt) {
-    evt.preventDefault();
-    this._callback.saveClick(EditForm.parsePointToData(this._data));
+  /** выход из редактирования без сохранения */
+  reset(point) {
+    this.updateData(
+      EditForm.parsePointToData(point, this._offers),
+    );
+  }
+
+  _setInnerHandlers() {
+    this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
+    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
+    this.getElement().querySelector('.event__input--price').addEventListener('change', this._handlePriceChange);
   }
 
   setClickSaveHandler(callback) {
@@ -207,28 +216,50 @@ export default class EditForm extends SmartView {
     this.getElement().querySelector('form').addEventListener('submit', this._handleSaveClick);
   }
 
+  setClickCloseHandler(callback) {
+    this._callback.editCloseClick = callback;
+    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._handleEditClick);
+  }
+
+  setClickCancelHandler(callback) {
+    this._callback.cancelСlick = callback;
+    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
+  }
+
+  setClickDeleteHandler(callback) {
+    this._callback.deleteClick = callback;
+    this.getElement().querySelector('form').addEventListener('reset', this._handleDeleteClick);
+  }
+
+  restoreHandlers() {
+    this._setInnerHandlers();
+    this.setClickSaveHandler(this._callback.saveClick);
+    this.setClickCloseHandler(this._callback.editCloseClick);
+    this.setClickDeleteHandler(this._callback.deleteClick);
+  }
+
+  /** обработчик на Save */
+  _handleSaveClick(evt) {
+    evt.preventDefault();
+    this._callback.saveClick(EditForm.parsePointToData(this._data));
+  }
+
+  /** обработчик на Cancel */
+  _handleCancelClick(evt) {
+    evt.preventDefault();
+    this._callback.cancelСlick();
+  }
+
+  /** обработчик на Delete */
+  _handleDeleteClick(evt) {
+    evt.preventDefault();
+    this._callback.deleteClick(EditForm.parseDataToPoint(this._data));
+  }
 
   /** обработчик на стрелку закрытия формы */
   _handleEditClick(evt) {
     evt.preventDefault();
-    this._callback.editClick();
-  }
-
-  setClickCloseHandler(callback) {
-    this._callback.editClick = callback;
-    this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._handleEditClick);
-  }
-
-
-  /** обработчик на Cancel/Delete */
-  _handleCancelClick(evt) {
-    evt.preventDefault();
-    this._callback.clickCancel();
-  }
-
-  setClickCancelHandler(callback) {
-    this._callback.clickCancel = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
+    this._callback.editCloseClick();
   }
 
   /** обработчик на смену типа события */
@@ -240,21 +271,6 @@ export default class EditForm extends SmartView {
       });
     }
   }
-
-
-  // _handleTypeChange(evt) {
-  //   evt.preventDefault();
-  //   this.updateData(
-  //     {
-  //       offers:[],
-  //     },
-  //   ),
-  //   this.updateData({
-  //     type: evt.target.value,
-  //   });
-  //   this._offers = [];
-  // }
-
 
   /** обработчик на смену города */
   _handleCityChange(evt) {
@@ -270,16 +286,12 @@ export default class EditForm extends SmartView {
     });
   }
 
-
-  _setInnerHandlers() {
-    this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
-    this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
-  }
-
-  restoreHandlers() {
-    this._setInnerHandlers();
-    this.setClickSaveHandler(this._callback.saveClick);
-    this.setClickCloseHandler(this._callback.editClick);
+  /** обработчик на изменение цены */
+  _handlePriceChange(evt) {
+    evt.preventDefault();
+    this.updateData({
+      price: evt.target.value,
+    });
   }
 
 

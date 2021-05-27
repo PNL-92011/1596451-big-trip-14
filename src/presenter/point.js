@@ -18,6 +18,8 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._handleCloseEdit = this._handleCloseEdit.bind(this);
   }
 
   init(point) {
@@ -29,11 +31,13 @@ export default class Point {
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new EditFormView(point);
 
-    this._pointComponent.setClickOpenHandler(this._handleEditClick);           /** открытие стрелка */
+    this._pointComponent.setEditClickHandler(this._handleEditClick);           /** открытие стрелка */
+    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);   /** Favorite */
     this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** закрытие Save */
     this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel */
     this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** закрытие стрелка */
-    this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);   /** Favorite */
+    this._pointEditComponent.setClickCloseHandler(this._handleCloseEdit);     /** закрытие стрелка */
+    this._pointEditComponent.setClickDeleteHandler(this._handleDeleteClick);  /** Delete */
 
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -80,6 +84,7 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._task);
       this._replaceEditFormToPoint();
     }
   }
@@ -100,8 +105,20 @@ export default class Point {
     this._replacePointToEditForm();
   }
 
+  _handleCloseEdit() {
+    this._pointEditComponent.reset(this._point);
+    this._replaceEditFormToPoint();
+  }
+
   _handleFormSubmit(point) {
     this._replaceEditFormToPoint();
     this._changeData(point);
   }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      point,
+    );
+  }
+
 }
