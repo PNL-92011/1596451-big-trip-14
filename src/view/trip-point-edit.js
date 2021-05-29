@@ -195,10 +195,10 @@ export default class EditForm extends SmartView {
     // this._handleDateStartChange = this._handleDateStartChange.bind(this);
     // this._handleDateEndChange = this._handleDateEndChange.bind(this);
 
-
     this._setInnerHandlers();
     //this._setDatepicker();
   }
+
 
   getTemplate() {
     return editPointForm(this._data);
@@ -383,6 +383,9 @@ export default class EditForm extends SmartView {
 
     delete data.isPictures;
     delete data.isDescription;
+    delete data.isSaving;
+    delete data.isDisabled;
+    delete data.isDeleting;
 
     return data;
   }

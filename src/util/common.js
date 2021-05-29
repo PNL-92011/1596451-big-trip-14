@@ -29,3 +29,9 @@ export const UpdateType = {
   MINOR: 'MINOR',    // перерисовка списка ТМ
   MAJOR: 'MAJOR',    // перерисовка всего Trip (для применения фильтров и сортировки)
 };
+
+export const FilterType = {
+  EVERYTHING: 'everything',
+  FUTURE: 'future',
+  PAST: 'past',
+};

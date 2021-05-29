@@ -33,6 +33,8 @@ export default class Trip {
 
     this._handleModeChange = this._handleModeChange.bind(this);
     this._handleSortTypeChange = this._handleSortTypeChange.bind(this);
+
+    this._pointsModel.addObserver(this._handleModelEvent);
   }
 
   //// init(tripPointsData) {
@@ -40,7 +42,7 @@ export default class Trip {
   //// this._sourcedPoints = tripPointsData.slice();   /** сохранение исходного порядка ТМ */
   init() {
     this._renderTrip();
-    this._renderList();
+    //this._renderList();
   }
 
   _getPoints() {
@@ -121,11 +123,11 @@ export default class Trip {
       this._renderMessage();
       return;
     }
-
     this._renderTripInfo();
     this._renderMenu();
     this._renderFilter();
     this._renderSort();
+    this._renderList();
   }
 
 
@@ -137,29 +139,29 @@ export default class Trip {
 
 
   ////  вызов обновления модели = обработка действий на представлении
-  ////  отдаем вьюшкам
+  ////  (здесь Презентер говорит Моделе, что нужно сделать)
   _handleViewAction(actionType, updateType, update) {
-    console.log(actionType, updateType, update);
+    //console.log(actionType, updateType, update);
     // actionType - действие пользователя (изменение, добавление, удаление данных)
     // updateType - тип изменений (для корректного (частичного или полного) обновления)
     // update - обновленные данные
 
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        this._pointsModel.updatePoint(updateType, update);
+        this._pointsModel.updatePoint(updateType, update); // Модель обновит ТМ и сообщит об этом Презентеру
         break;
       case UserAction.ADD_POINT:
-        this._pointsModel.addPoint(updateType, update);
+        this._pointsModel.addPoint(updateType, update);    //  Модель добавит ТМ и сообщит об этом Презентеру
         break;
       case UserAction.DELETE_POINT:
-        this._pointsModel.deletePoint(updateType, update);
+        this._pointsModel.deletePoint(updateType, update);  // Модель удалит ТМ и сообщит об этом Презентеру
         break;
     }
   }
 
   //// отдаем модели
-  _handleModelEvent(updateType, data) {
-    console.log(updateType, data);
+  _handleModelEvent(updateType, point) {
+    //console.log(updateType, point);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)
@@ -167,21 +169,23 @@ export default class Trip {
 
     switch (updateType) {
       case UpdateType.PATCH:
-        // - обновление ТМ (например, когда поменялась цена или дата)
+        // - обновление ТМ (например, пометить избранным)
         //// Можно ли вместо this._pointPresenter[data.id].init(data); (из демо) применить renderPoint(data) ???
-        ////  УТОЧНИТЬ
-        this._renderPoint(data);
+        //this._renderPoint(data);
+        this._pointPresenter[point.id].init(point);
         break;
       case UpdateType.MINOR:
-        // - обновление списка ТМ (например, когда ТМ занесли в избранное)
+        // - обновление списка ТМ (при изменении данных внутри ТМ)
         this._clearTrip();
+        this._renderSort();
         this._renderList();
+        this._renderTripInfo();
         break;
       case UpdateType.MAJOR:
         // - обновление всего Trip (например, при переключении фильтра)
         this._clearTrip({resetSortType: true});
         this._renderTrip();
-        this._renderList();
+        // добавить фильтрацию
         break;
     }
   }
@@ -195,7 +199,8 @@ export default class Trip {
 
     this._currentSortType = sortType;   /** сортировка ТМ */          ////this._sortPoints(sortType);
     this._clearTrip();                  /** очистка ТМ */             ////this._clearPoints();
-    this._renderPoints();               /** отрисовка ТМ заново */
+    //this._renderPoints();             /** отрисовка ТМ заново */
+    this._renderTrip();
   }
 }
 

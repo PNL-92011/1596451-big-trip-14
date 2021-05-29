@@ -34,7 +34,7 @@ export default class Point {
     this._pointComponent.setEditClickHandler(this._handleEditClick);           /** открытие стрелка */
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);   /** Favorite */
     this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** закрытие Save */
-    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel */
+    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel *//// ?????
     this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** закрытие стрелка */
     this._pointEditComponent.setClickCloseHandler(this._handleCloseEdit);     /** закрытие стрелка */
     this._pointEditComponent.setClickDeleteHandler(this._handleDeleteClick);  /** Delete */
@@ -92,6 +92,7 @@ export default class Point {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_POINT,
+      //UpdateType.PATCH,
       UpdateType.MINOR,
       Object.assign(
         {},
@@ -112,17 +113,19 @@ export default class Point {
     this._replaceEditFormToPoint();
   }
 
-  _handleFormSubmit(point) {
-    this._replaceEditFormToPoint();
+  _handleFormSubmit(point) {      // Submit - пока только обновление ТМ (без добавления новых ТМ)
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,
       point,
     );
-  }  // Submit - пока только обновление ТМ (без добавления новых ТМ)
+    this._replaceEditFormToPoint();
+  }
 
   _handleDeleteClick(point) {
     this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
       point,
     );
   }

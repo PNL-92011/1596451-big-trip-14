@@ -1,4 +1,4 @@
-import Observer from '../util/observer.js';
+import Observer from './observer.js';
 
 export default class Points extends Observer {
   constructor() {
@@ -23,14 +23,14 @@ export default class Points extends Observer {
       throw new Error('Can\'t update unexisting point');
     }
 
-    this._points = [
+    this._points = [                        // перезаписывает массив ТМ
       ...this._points.slice(0, index),
       update,
       ...this._points.slice(index + 1),
     ];
 
-    this._notify(updateType, update); // вызов всех подписантов Обзервера => будет вызываться _handleModelEvent
-  }
+    this._notify(updateType, this._points); // здесь Модель сообщает Презентеру, что данные обновлены и их можно забрать =>
+  }                                         // =>  будет вызываться _handleModelEvent
 
 
   /** добавление ТМ */
@@ -40,7 +40,7 @@ export default class Points extends Observer {
       ...this._points,
     ];
 
-    this._notify(updateType, update);
+    this._notify(updateType, this._points);
   }
 
 
