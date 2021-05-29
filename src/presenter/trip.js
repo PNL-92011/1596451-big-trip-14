@@ -4,15 +4,15 @@ import FilterView from '../view/trip-filters.js';
 import PointsListView from '../view/trip-point-list.js';
 import TripInfoView from '../view/trip-info.js';
 import NewPointView from '../view/trip-point-new.js';
-import { render } from '../util/render.js';
+import { render, remove } from '../util/render.js';
 import { sortDay, sortTime, sortPrice } from '../util/sort-functions.js';
 import { RenderPosition, SortType, UserAction, UpdateType } from '../util/common.js';
 import PointPresenter from '../presenter/point.js';
 
 
 export default class Trip {
-  constructor(tripContainer, tripInfoContainer, tripFilterContainer, tripMenuContainer, pointsModal) {
-    this._pointsModal = pointsModal;
+  constructor(tripContainer, tripInfoContainer, tripFilterContainer, tripMenuContainer, pointsModel) {
+    this._pointsModel = pointsModel;
     this._tripContainer = tripContainer;
     this._tripInfoContainer = tripInfoContainer;
     this._tripFilterContainer = tripFilterContainer;
@@ -22,7 +22,7 @@ export default class Trip {
     this._pointsListComponent = new PointsListView();
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
-    this._sortComponent = new SortView();
+    this._sortComponent = null;
     this._newPointComponent = new NewPointView();
     this._tripInfoComponent = new TripInfoView();
 
@@ -57,8 +57,13 @@ export default class Trip {
 
 
   _renderSort() {
-    render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
+    if (this._sortComponent !== null) {
+      this._sortComponent = null;
+    }
+
+    this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
+    render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTripInfo() {
@@ -85,9 +90,9 @@ export default class Trip {
     this._pointPresenter[point.id] = pointPresenter;
   }
 
-  _renderPoints(points) {
-    ////this._tripPointsData.forEach((point) => this._renderPoint(point));
-    points.forEach((point) => this._renderPoint(point));
+  _renderPoints() {
+    const points = this._getPoints();
+    points.forEach((point) => this._renderPoint(point));      ////this._tripPointsData.forEach((point) => this._renderPoint(point));
   }
 
   _clearPoints() {
@@ -95,6 +100,16 @@ export default class Trip {
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
     this._pointPresenter = {};
+  }
+
+  _clearTrip({resetSortType = false} = {}) {
+    this._clearPoints();
+    remove(this._sortComponent);
+    remove(this._newPointComponent);
+
+    if (resetSortType) {
+      this._currentSortType === SortType.DAY;
+    }
   }
 
   _renderMessage() {
@@ -120,21 +135,11 @@ export default class Trip {
       .forEach((pointPresenter) => pointPresenter.resetView());
   }
 
-  //// /** вызов обновления модели */
-  //// _handlePointChange(updatedPoint) {
-  ////   this._tripPointsData = updateItem(this._tripPointsData, updatedPoint);
-  ////   this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  //// }
 
-
-  //// _handlePointChange(updatedPoint) {
-  ////   this._pointPresenter[updatedPoint.id].init(updatedPoint);
-  //// }
-
-  //// /** вызов обновления модели = обработка действий на представлении */
+  ////  вызов обновления модели = обработка действий на представлении
   ////  отдаем вьюшкам
   _handleViewAction(actionType, updateType, update) {
-    //console.log(actionType, updateType, update);
+    console.log(actionType, updateType, update);
     // actionType - действие пользователя (изменение, добавление, удаление данных)
     // updateType - тип изменений (для корректного (частичного или полного) обновления)
     // update - обновленные данные
@@ -154,7 +159,7 @@ export default class Trip {
 
   //// отдаем модели
   _handleModelEvent(updateType, data) {
-    //console.log(updateType, data);
+    console.log(updateType, data);
     // В зависимости от типа изменений решаем, что делать:
     // - обновить часть списка (например, когда поменялось описание)
     // - обновить список (например, когда задача ушла в архив)
@@ -169,10 +174,12 @@ export default class Trip {
         break;
       case UpdateType.MINOR:
         // - обновление списка ТМ (например, когда ТМ занесли в избранное)
+        this._clearTrip();
         this._renderList();
         break;
       case UpdateType.MAJOR:
         // - обновление всего Trip (например, при переключении фильтра)
+        this._clearTrip({resetSortType: true});
         this._renderTrip();
         this._renderList();
         break;
@@ -186,15 +193,9 @@ export default class Trip {
       return;
     }
 
-    /** сортировка ТМ */
-    ////this._sortPoints(sortType);
-    this._currentSortType = sortType;
-
-    /** очистка ТМ */
-    this._clearPoints();
-
-    /** рендерим ТМ заново */
-    this._renderPoints();
+    this._currentSortType = sortType;   /** сортировка ТМ */          ////this._sortPoints(sortType);
+    this._clearTrip();                  /** очистка ТМ */             ////this._clearPoints();
+    this._renderPoints();               /** отрисовка ТМ заново */
   }
 }
 
