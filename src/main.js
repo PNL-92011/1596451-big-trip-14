@@ -19,10 +19,11 @@ const siteEvents = document.querySelector('.trip-events');
 
 
 const tripPresenter = new TripPresenter(siteEvents, siteMainHeader, siteMenu, siteFilter, pointsModel, filterModel);
-tripPresenter.init();
-
+//const tripPresenter = new TripPresenter(siteEvents, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilter, filterModel, pointsModel);
+
 filterPresenter.init();
+tripPresenter.init();
 
 
 //

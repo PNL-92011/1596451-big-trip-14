@@ -13,13 +13,13 @@ const createFilters = (filter, currentFilterType) => {
   </div>`;
 };
 
-const createFiltersTemplate = (filtersItems, currentFilterType) => {
-  const filterItemsTemplate = filtersItems.map((filter) => createFilters(filter, currentFilterType)).join('');
+const createFiltersTemplate = (filterItems, currentFilterType) => {
+  const filterItemsTemplate = filterItems.map((filter) => createFilters(filter, currentFilterType)).join('');
 
   return `<form class="trip-filters" action="#" method="get">
-  ${filterItemsTemplate}
-  <button class="visually-hidden" type="submit">Accept filter</button>
-</form>`;
+    ${filterItemsTemplate}
+    <button class="visually-hidden" type="submit">Accept filter</button>
+  </form>`;
 };
 
 
