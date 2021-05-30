@@ -76,8 +76,13 @@ const createTripInfo = () => {
 
 
 export default class TripInfo extends AbstractView {
+  constructor(points) {
+    super();
+    this._points = points;
+  }
+
   getTemplate() {
-    return createTripInfo();
+    return createTripInfo(this._points);
   }
 }
 
