@@ -7,7 +7,8 @@ import NewPointView from '../view/trip-point-new.js';
 import { render, remove } from '../util/render.js';
 import { sortDay, sortTime, sortPrice, filter } from '../util/sort-functions.js';
 import { RenderPosition, SortType, UserAction, UpdateType } from '../util/common.js';
-import PointPresenter from '../presenter/point.js';
+import PointPresenter from './point.js';
+import FilterPresenter from './filter.js';
 
 
 export default class Trip {
@@ -26,8 +27,10 @@ export default class Trip {
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
     this._newPointComponent = new NewPointView();
-    this._tripInfoComponent = new TripInfoView();
+    this._tripInfoComponent = new TripInfoView(this._getPoints());
     this._pointsListComponent = new PointsListView();
+
+    this._filterPresenter = new FilterPresenter(this._tripMenuContainer, this._pointsModel, this._filterModel);
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -39,11 +42,10 @@ export default class Trip {
     this._filterModel.addObserver(this._handleModelEvent);
   }
 
-  //// init(tripPointsData) {
-  //// this._tripPointsData = tripPointsData;
-  //// this._sourcedPoints = tripPointsData.slice();   /** сохранение исходного порядка ТМ */
   init() {
     this._renderTrip();
+    this._filterPresenter.init();
+    //this._tripInfoComponent.init(this._getPoints());
     //this._renderList();
   }
 
@@ -68,7 +70,6 @@ export default class Trip {
     if (this._sortComponent !== null) {
       this._sortComponent = null;
     }
-
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
@@ -76,6 +77,7 @@ export default class Trip {
 
   _renderTripInfo() {
     // при перерисовке нужно брать новые данные
+    this._tripInfoComponent.init(this._getPoints());
     render(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
 
@@ -135,9 +137,10 @@ export default class Trip {
       this._renderMessage();
       return;
     }
+    //this._tripInfoComponent.init(this._points());
     this._renderTripInfo();
     this._renderMenu();
-    this._renderFilter();
+    //this._renderFilter();
     this._renderSort();
     this._renderList();
   }
@@ -193,6 +196,7 @@ export default class Trip {
         this._renderList();
         this._clearTripInfo(); //  очистка TripInfo
         this._renderTripInfo();
+        //this._tripInfoComponent.init(this._getPoints());
         break;
       case UpdateType.MAJOR:
         // - обновление всего Trip (например, при переключении фильтра)

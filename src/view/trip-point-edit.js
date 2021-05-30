@@ -189,7 +189,7 @@ export default class EditForm extends SmartView {
 
     this._handleTypeChange = this._handleTypeChange.bind(this);
     this._handleCityChange = this._handleCityChange.bind(this);
-    this._handlePriceChange = this._handlePriceChange.bind(this);
+    //this._handlePriceChange = this._handlePriceChange.bind(this);
     // this._handleOffersChange = this._handleOffersChange.bind(this);
     // dateChange
     // this._handleDateStartChange = this._handleDateStartChange.bind(this);
@@ -214,7 +214,7 @@ export default class EditForm extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
-    this.getElement().querySelector('.event__input--price').addEventListener('change', this._handlePriceChange);
+    // this.getElement().querySelector('.event__input--price').addEventListener('input', this._handlePriceChange);
   }
 
   setClickSaveHandler(callback) {
@@ -304,6 +304,7 @@ export default class EditForm extends SmartView {
   /** обработчик на Save */
   _handleSaveClick(evt) {
     evt.preventDefault();
+    this._handleUpdatePrice(this.getElement().querySelector('.event__input--price'));
     this._callback.saveClick(EditForm.parsePointToData(this._data));
   }
 
@@ -350,10 +351,10 @@ export default class EditForm extends SmartView {
   }
 
   /** обработчик на изменение цены */
-  _handlePriceChange(evt) {
-    evt.preventDefault();
+  _handleUpdatePrice(element) {
+    //evt.preventDefault();
     this.updateData({
-      price: evt.target.value,
+      price: parseInt(element.value),
     });
   }
 
@@ -363,8 +364,8 @@ export default class EditForm extends SmartView {
       {},
       point,
       {
-        isPictures: point.destination.photos.length !==0,
-        isDescription: point.destination.description.length !==0,
+        isPictures: point.destination.photos.length !== 0,
+        isDescription: point.destination.description.length !== 0,
       },
     );
   }

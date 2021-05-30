@@ -1,4 +1,4 @@
-import { tripPointsData } from '../main.js';
+// import { tripPointsData } from '../main.js';
 import { formatDayMonth } from '../util/date-format.js';
 import { getRanging } from '../util/sort-functions.js';
 import AbstractView from './abstract.js';
@@ -18,19 +18,19 @@ const getRoute = (points) => {
   }
 
   if (points.length === 2) {
-    const SortedByDate = tripPointsData.sort(getRanging);
+    const SortedByDate = points.sort(getRanging);
     return `<h1 class="trip-info__title">${SortedByDate[0].destination.city} &mdash; ${SortedByDate[1].destination.city}</h1>`;
   }
 
   if (points.length === 3) {
 
-    const SortedByDate = tripPointsData.sort(getRanging);
+    const SortedByDate = points.sort(getRanging);
     return `<h1 class="trip-info__title">${SortedByDate[0].destination.city} &mdash; ${SortedByDate[1].destination.city} &mdash; ${SortedByDate[2].destination.city}</h1>`;
   } else
 
   if (points.length > 3) {
 
-    const SortedByDate = tripPointsData.sort(getRanging);
+    const SortedByDate = points.sort(getRanging);
     return `<h1 class="trip-info__title">${SortedByDate[0].destination.city} &mdash; ... &mdash; ${SortedByDate[SortedByDate.length - 1].destination.city}</h1>`;
   }
 };
@@ -39,7 +39,7 @@ const getRoute = (points) => {
 const getDateRoute = (points) => {
   if (points.length) {
 
-    const SortedByDate = tripPointsData.sort(getRanging);
+    const SortedByDate = points.sort(getRanging);
     return `
     <p class="trip-info__dates"> ${formatDayMonth(SortedByDate[0].dateFrom)}&nbsp;&mdash;&nbsp;${formatDayMonth(SortedByDate[SortedByDate.length - 1].dateTill)} </p>`;
   }
@@ -60,16 +60,16 @@ const getCostRoute = (points) => {
 };
 
 
-const createTripInfo = () => {
+const createTripInfo = (pointsData) => {
 
   return `<section class="trip-main__trip-info  trip-info">
   <div class="trip-info__main">
-    ${getRoute(tripPointsData)}
+    ${getRoute(pointsData)}
 
-    <p class="trip-info__dates">${getDateRoute(tripPointsData)}</p>
+    <p class="trip-info__dates">${getDateRoute(pointsData)}</p>
   </div>
 
-  ${getCostRoute(tripPointsData)}
+  ${getCostRoute(pointsData)}
 
  </section>`;
 };
@@ -81,6 +81,9 @@ export default class TripInfo extends AbstractView {
     this._points = points;
   }
 
+  init(points) {
+    this._points = points;
+  }
   getTemplate() {
     return createTripInfo(this._points);
   }
