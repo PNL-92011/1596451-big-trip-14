@@ -3,11 +3,14 @@ import SortView from '../view/trip-sorting.js';
 import FilterView from '../view/trip-filters.js';
 import PointsListView from '../view/trip-point-list.js';
 import TripInfoView from '../view/trip-info.js';
-import NewPointView from '../view/trip-point-new.js';
+import NewEventView from '../view/trip-point-new.js';
+
 import { render, remove } from '../util/render.js';
 import { sortDay, sortTime, sortPrice, filter } from '../util/sort-functions.js';
-import { RenderPosition, SortType, UserAction, UpdateType } from '../util/common.js';
+import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '../util/common.js';
+
 import PointPresenter from './point.js';
+import NewEventPresenter from './new-event.js';
 //import FilterPresenter from './filter.js';  // вернула filterPresenter в main
 
 
@@ -26,7 +29,7 @@ export default class Trip {
     this._sortComponent = null;
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
-    this._newPointComponent = new NewPointView();
+    this._newEventComponent = new NewEventView();
     this._tripInfoComponent = new TripInfoView(this._getPoints());
     this._pointsListComponent = new PointsListView();
 
@@ -40,12 +43,20 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._newEventPresenter = new NewEventPresenter(this._pointsListComponent, this._handleViewAction);
   }
 
 
   init() {
     this._renderTrip();
     //this._filterPresenter.init();  // вернула filterPresenter в main
+  }
+
+  _createNewEvent() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newEventPresenter.init();
   }
 
   _getPoints() {
@@ -111,6 +122,7 @@ export default class Trip {
   }
 
   _clearPoints() {
+    this._newEventPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -121,7 +133,7 @@ export default class Trip {
     this._clearPoints();
     remove(this._sortComponent);
     remove(this._tripInfoComponent);
-    remove(this._newPointComponent);
+    remove(this._newEventComponent);
 
     if (resetSortType) {
       this._currentSortType === SortType.DAY;
@@ -129,7 +141,7 @@ export default class Trip {
   }
 
   _renderMessage() {
-    render(this._tripContainer, this._newPointComponent, RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._newEventComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTrip() {
@@ -145,6 +157,7 @@ export default class Trip {
 
 
   _handleModeChange() {
+    this._newEventPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((pointPresenter) => pointPresenter.resetView());

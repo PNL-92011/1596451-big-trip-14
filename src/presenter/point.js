@@ -34,10 +34,9 @@ export default class Point {
     this._pointComponent.setEditClickHandler(this._handleEditClick);           /** открытие стрелка */
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);   /** Favorite */
     this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** закрытие Save */
-    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel *//// ?????
     this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** закрытие стрелка */
-    this._pointEditComponent.setClickCloseHandler(this._handleCloseEdit);     /** закрытие стрелка */
-    this._pointEditComponent.setClickDeleteHandler(this._handleDeleteClick);  /** Delete */
+    this._pointEditComponent.setClickCloseHandler(this._handleCloseEdit);      /** закрытие стрелка */
+    this._pointEditComponent.setClickDeleteHandler(this._handleDeleteClick);   /** Delete */
 
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
