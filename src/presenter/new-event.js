@@ -18,15 +18,6 @@ const BLANK_POINT_NEW = {
   isFavorite: false,
 };
 
-// const BLANK_POINT_NEW = {
-//   type: 'flight',
-//   destination: null,
-//   dateFrom: null,
-//   dateTill: null,
-//   offers: [],
-//   price: '',
-//   isFavorite: false,
-// };
 
 export default class NewEvent {
   constructor(pointsListComponent, changeData) {
@@ -45,10 +36,10 @@ export default class NewEvent {
       return;
     }
     this._newEventComponent = new EditFormView(BLANK_POINT_NEW);
-    this._newEventComponent.setFormSubmitHandler(this._handleFormSubmit);
+    this._newEventComponent.setClickSaveHandler(this._handleFormSubmit);
     this._newEventComponent.setClickDeleteHandler(this._handleDeleteClick);
 
-    render(this._pointListContainer, this._newEventComponent, RenderPosition.AFTERBEGIN);
+    render(this._pointsListComponent, this._newEventComponent, RenderPosition.AFTERBEGIN);
 
     document.addEventListener('keydown', this._escKeyDownHandler);
     document.querySelector('.trip-main__event-add-btn').disabled = true;
