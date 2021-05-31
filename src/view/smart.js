@@ -3,7 +3,7 @@ import Abstract from './abstract.js';
 export default class Smart extends Abstract {
   constructor() {
     super();
-    this._pointData = {};
+    this._data = {};
   }
 
   restoreHandlers() {
@@ -29,9 +29,9 @@ export default class Smart extends Abstract {
       return;
     }
 
-    this._pointData = Object.assign(
+    this._data = Object.assign(
       {},
-      this._pointData,
+      this._data,
       update,
     );
 

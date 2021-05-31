@@ -1,7 +1,7 @@
 import EditFormView from '../view/trip-point-edit.js';
 import PointView from '../view/trip-point.js';
 import { render, replace, remove } from '../util/render.js';
-import { RenderPosition, Mode } from '../util/common.js';
+import { RenderPosition, Mode, UserAction, UpdateType } from '../util/common.js';
 
 
 export default class Point {
@@ -18,6 +18,8 @@ export default class Point {
     this._handleFormSubmit = this._handleFormSubmit.bind(this);
     this._escKeyDownHandler = this._escKeyDownHandler.bind(this);
     this._handleFavoriteClick = this._handleFavoriteClick.bind(this);
+    this._handleDeleteClick = this._handleDeleteClick.bind(this);
+    this._handleCloseEdit = this._handleCloseEdit.bind(this);
   }
 
   init(point) {
@@ -29,11 +31,13 @@ export default class Point {
     this._pointComponent = new PointView(point);
     this._pointEditComponent = new EditFormView(point);
 
-    this._pointComponent.setClickOpenHandler(this._handleEditClick);           /** открытие стрелка */
-    this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** закрытие Save */
-    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel */
-    this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** закрытие стрелка */
+    this._pointComponent.setEditClickHandler(this._handleEditClick);           /** открытие стрелка */
     this._pointComponent.setFavoriteClickHandler(this._handleFavoriteClick);   /** Favorite */
+    this._pointEditComponent.setClickSaveHandler(this._handleFormSubmit);      /** закрытие Save */
+    this._pointEditComponent.setClickCancelHandler(this._handleFormSubmit);    /** закрытие Cancel *//// ?????
+    this._pointEditComponent.setClickCloseHandler(this._handleFormSubmit);     /** закрытие стрелка */
+    this._pointEditComponent.setClickCloseHandler(this._handleCloseEdit);     /** закрытие стрелка */
+    this._pointEditComponent.setClickDeleteHandler(this._handleDeleteClick);  /** Delete */
 
 
     if (prevPointComponent === null || prevPointEditComponent === null) {
@@ -80,12 +84,16 @@ export default class Point {
   _escKeyDownHandler(evt) {
     if (evt.key === 'Escape' || evt.key === 'Esc') {
       evt.preventDefault();
+      this._pointEditComponent.reset(this._point);
       this._replaceEditFormToPoint();
     }
   }
 
   _handleFavoriteClick() {
     this._changeData(
+      UserAction.UPDATE_POINT,
+      //UpdateType.PATCH,
+      UpdateType.MINOR,
       Object.assign(
         {},
         this._point,
@@ -100,8 +108,26 @@ export default class Point {
     this._replacePointToEditForm();
   }
 
-  _handleFormSubmit() {
+  _handleCloseEdit() {
+    this._pointEditComponent.reset(this._point);
     this._replaceEditFormToPoint();
-    this._changeData(this._point);
   }
+
+  _handleFormSubmit(point) {      // Submit - пока только обновление ТМ (без добавления новых ТМ)
+    this._changeData(
+      UserAction.UPDATE_POINT,
+      UpdateType.MINOR,
+      point,
+    );
+    this._replaceEditFormToPoint();
+  }
+
+  _handleDeleteClick(point) {
+    this._changeData(
+      UserAction.DELETE_POINT,
+      UpdateType.MAJOR,
+      point,
+    );
+  }
+
 }

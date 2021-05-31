@@ -1,6 +1,3 @@
-// const OFFER_AMOUNT_MIN = 0;
-// const OFFER_AMOUNT_MAX = 5;
-
 const TYPES = ['taxi', 'bus', 'train', 'ship', 'transport', 'drive', 'flight', 'check-in', 'sightseeing', 'restaurant'];
 
 const OFFERS = {
@@ -73,7 +70,7 @@ const GROUP_OFFERS = {
   transport: [ OFFERS.car, OFFERS.tickets, OFFERS.luggage, OFFERS.comfort, OFFERS.meal ],
   drive: [ OFFERS.car, OFFERS.comfort ],
   flight: [ OFFERS.luggage, OFFERS.meal, OFFERS.comfort ],
-  checkin: [OFFERS.comfort, OFFERS.breakfast ],
+  'check-in': [OFFERS.comfort, OFFERS.breakfast ],
   sightseeing: [ OFFERS.tickets, OFFERS.seats ],
   restaurant: [ OFFERS.comfort ],
 };

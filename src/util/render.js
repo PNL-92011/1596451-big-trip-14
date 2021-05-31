@@ -1,6 +1,5 @@
 import { RenderPosition } from '../util/common.js';
 import Abstract from '../view/abstract.js';
-import dayjs from 'dayjs';
 
 
 /**
@@ -76,47 +75,3 @@ export const remove = (component) => {
 };
 
 
-/**
- * Функция обновления элемента в массиве
- * @returns array - возвращает массив с обновленным значением
- */
-export const updateItem = (items, update) => {
-  const index = items.findIndex((item) => item.id === update.id);
-
-  if (index === -1) {
-    return items;
-  }
-
-  return [
-    ...items.slice(0, index),
-    update,
-    ...items.slice(index + 1),
-  ];
-};
-
-
-/** Функции ранжирования */
-export const getRanging = (a,b) => {
-  if (a.dateFrom > b.dateFrom) {
-    return 1;
-  }
-  if (a.dateFrom < b.dateFrom) {
-    return -1;
-  }
-};
-
-
-/** Функции сортировки */
-export const sortDay = (A, B) => dayjs(B.dateFrom).diff(dayjs(A.dateFrom));
-export const sortTime = (A, B) => dayjs(dayjs(B.dateTill).diff(dayjs(B.dateFrom))).diff(dayjs(dayjs(A.dateTill).diff(dayjs(A.dateFrom))));
-export const sortPrice = (A, B) => B.price - A.price;
-
-
-/** Функция получения доп.опций в зависимости от типа события */
-export const getArrayByType = (array, type) => {
-  for (const key in array) {
-    if (key === type) {
-      return array[key];
-    }
-  }
-};

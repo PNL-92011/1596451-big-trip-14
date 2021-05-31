@@ -34,14 +34,18 @@ const getShuffled = (arr) => arr.sort(() => {
 
 /**
  * Функция получения массива произвольной длины
- * с перемешиванием элементов в массиве
- * @param {array} source — массив данных
- * @param {number} maxLength — длина массива
- */
-const generateNewArr = ([...source], maxLength) => Array.from(
-  { length: Math.min(source.length, 1 + Math.random() * maxLength | 0) },
-  () => source.splice(Math.random() * source.length | 0, 1)[0],
-);
+ * @param {array} arr — массив данных
+ * @retern {array} array - новый массив
+*/
+const generateNewArr = (arr) => {
+  const array = [];
+  arr.forEach((element) => {
+    if (Math.random() < 0.5) {
+      array.push(element);
+    }
+  });
+  return array;
+};
 
 
 export {getRandomInteger, getRandomElement, generateNewArr, getShuffled};
