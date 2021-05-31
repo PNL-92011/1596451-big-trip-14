@@ -7,11 +7,13 @@ import NewEventView from '../view/trip-point-new.js';
 
 import { render, remove } from '../util/render.js';
 import { sortDay, sortTime, sortPrice, filter } from '../util/sort-functions.js';
+
 import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '../util/common.js';
 
 import PointPresenter from './point.js';
 import NewEventPresenter from './new-event.js';
 //import FilterPresenter from './filter.js';  // вернула filterPresenter в main
+
 
 
 export default class Trip {
@@ -29,11 +31,13 @@ export default class Trip {
     this._sortComponent = null;
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
+
     this._newEventComponent = new NewEventView();
     this._tripInfoComponent = new TripInfoView(this._getPoints());
     this._pointsListComponent = new PointsListView();
 
     //this._filterPresenter = new FilterPresenter(this._tripMenuContainer, this._pointsModel = pointsModel, this._filterModel = filterModel);
+
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -48,6 +52,7 @@ export default class Trip {
   }
 
 
+
   init() {
     this._renderTrip();
     //this._filterPresenter.init();  // вернула filterPresenter в main
@@ -57,6 +62,7 @@ export default class Trip {
     this._currentSortType = SortType.DAY;
     this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
     this._newEventPresenter.init();
+
   }
 
   _getPoints() {
@@ -80,7 +86,6 @@ export default class Trip {
     if (this._sortComponent !== null) {
       this._sortComponent = null;
     }
-
     this._sortComponent = new SortView(this._currentSortType);
     this._sortComponent.setSortTypeChangeHandler(this._handleSortTypeChange);
     render(this._tripContainer, this._sortComponent, RenderPosition.BEFOREEND);
@@ -149,6 +154,7 @@ export default class Trip {
       this._renderMessage();
       return;
     }
+    //this._tripInfoComponent.init(this._points());
     this._renderTripInfo();
     this._renderMenu();
     this._renderSort();
@@ -193,6 +199,7 @@ export default class Trip {
         this._renderList();
         this._clearTripInfo();  // очистка TripInfo перед перерисовкой
         this._renderTripInfo();
+        //this._tripInfoComponent.init(this._getPoints());
         break;
       case UpdateType.MAJOR:    // - обновление всего Trip (например, при переключении фильтра)
         this._clearTrip({resetSortType: true});

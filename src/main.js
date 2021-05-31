@@ -1,6 +1,5 @@
 import { createMockPoints } from './mock/point.js';
 import TripPresenter from './presenter/trip.js';
-import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/point-model.js';
 import FilterModel from './model/filter-model.js';
 
@@ -21,7 +20,6 @@ const siteEvents = document.querySelector('.trip-events');
 const tripPresenter = new TripPresenter(siteEvents, siteMainHeader, siteMenu, siteFilter, pointsModel, filterModel);
 const filterPresenter = new FilterPresenter(siteFilter, filterModel, pointsModel);
 
-filterPresenter.init();
 tripPresenter.init();
 
 document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
