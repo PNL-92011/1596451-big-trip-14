@@ -81,28 +81,3 @@ export const createMockPoints = (count) => {
   return new Array(count).fill(null).map(generatePoint);
 };
 
-
-// For deleting
-// ==========================
-
-
-// Experiment
-// import { DESTINATIONS } from './collections.js';
-// import { offersGroup } from './collections.js';
-
-// /** Функция выбора случайного направления */
-// /** описание и фото прилагаются к пункту назначения */
-// const generateDestination = () => {
-//   const randomDestination = getRandomInteger(0, DESTINATIONS.length - 1);
-//   return DESTINATIONS[randomDestination];
-// };
-
-
-// /** Функция генерирования доп.опций по типу события */
-// const generateOffers = (offersGroup, type) => {
-//   const offersByType = offersGroup.filter((offer) => {
-//     return offer.type === type;
-//   });
-
-//   return offersByType.offersGroup;
-// };

@@ -1,7 +1,7 @@
 import EditFormView from '../view/trip-point-edit.js';
 import { render, remove } from '../util/render.js';
 import { RenderPosition, UserAction, UpdateType } from '../util/common.js';
-import {nanoid} from 'nanoid';
+//import {nanoid} from 'nanoid';
 
 
 const BLANK_POINT_NEW = {
@@ -56,13 +56,33 @@ export default class NewEvent {
     document.querySelector('.trip-main__event-add-btn').disabled = false;
   }
 
+  setSaving() {
+    this._newEventComponent.updateData({
+      isDisabled: true,
+      isSaving: true,
+    });
+  }
+
+  setAborting() {
+    const resetFormState = () => {
+      this._newEventComponent.updateData({
+        isDisabled: false,
+        isSaving: false,
+        isDeleting: false,
+      });
+    };
+
+    this._newEventComponent.shake(resetFormState);
+  }
+
   _handleFormSubmit(point) {
     this._changeData(
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
-      Object.assign({id: nanoid()}, point),   // пока нет данных с сервера - используем nanoid
+      point,
+      //Object.assign({id: nanoid()}, point),   // пока нет данных с сервера - используем nanoid
     );
-    this.destroy();
+    //this.destroy();
   }
 
   _handleDeleteClick() {

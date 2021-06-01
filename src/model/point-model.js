@@ -6,8 +6,9 @@ export default class Points extends Observer {
     this._points = [];
   }
 
-  setPoints(points) {
+  setPoints(updateType, points) {
     this._points = points.slice();
+    this._notify(updateType);
   }
 
   getPoints() {
@@ -95,8 +96,8 @@ export default class Points extends Observer {
       point,
       {
         'base_price': point.price,
-        'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
-        'date_to': point.dateTill instanceof Date ? point.dateTo.toISOString() : null,
+        'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null, // как узнать, в какой формат переводить нашу дату?
+        'date_to': point.dateTill instanceof Date ? point.dateTill.toISOString() : null,
         'is_favorite': point.isFavorite,
         'destination':
         {

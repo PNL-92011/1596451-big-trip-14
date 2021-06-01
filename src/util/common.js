@@ -9,6 +9,7 @@ export const RenderPosition = {
 export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
+  ABORTING: 'ABORTING',
 };
 
 export const SortType = {
@@ -27,6 +28,7 @@ export const UpdateType = {
   PATCH: 'PATCH',    // перерисовка ТМ
   MINOR: 'MINOR',    // перерисовка списка ТМ
   MAJOR: 'MAJOR',    // перерисовка всего Trip (для применения фильтров и сортировки)
+  INIT: 'INIT',      // перерисовка при инициализации (при запуске приложения)
 };
 
 export const FilterType = {

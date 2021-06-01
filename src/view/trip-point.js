@@ -5,13 +5,15 @@ import AbstractView from './abstract.js';
 const createTripPoint = (points) => {
   const {type, destination, dateFrom, dateTill, price, offers, isFavorite} = points;
 
-  const createOffers = offers.map((offer) => {
+  const createOffers = (offer) => {
     return `<li class="event__offer">
-      <span class="event__offer-title">${offer.name}</span>
+      <span class="event__offer-title">${offer.title}</span>
       &plus;&euro;&nbsp;
       <span class="event__offer-price">${offer.price}</span>
     </li>`;
-  }).join('');
+  };
+
+  const offersTemplate = offers.map((offer) => createOffers(offer)).join('');
 
 
   return `<li class="trip-events__item">
@@ -38,7 +40,7 @@ const createTripPoint = (points) => {
 
     <h4 class="visually-hidden">Offers:</h4>
     <ul class="event__selected-offers">
-     ${createOffers}
+     ${offersTemplate}
     </ul>
 
     <button class="event__favorite-btn ${isFavorite ? 'event__favorite-btn--active' : ''}" type="button">
