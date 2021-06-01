@@ -3,14 +3,27 @@ import TripPresenter from './presenter/trip.js';
 import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/point-model.js';
 import FilterModel from './model/filter-model.js';
+import Api from './api.js';
+
 
 const TRIP_POINTS = 2;
+const AUTHORIZATION = 'Basic polo944apolo8546wf';
+const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
+
+const addButtonNewEvent = document.querySelector('.trip-main__event-add-btn');
+
 export const tripPointsData = createMockPoints(TRIP_POINTS);
+const api = new Api(END_POINT, AUTHORIZATION);
+
+api.getPoints().then((points) => {
+  console.log(points);
+});
 
 const pointsModel = new PointsModel();
 pointsModel.setPoints(tripPointsData);  /** пока не подключен сервер - записываем моковые данные */
 
 const filterModel = new FilterModel();
+
 
 const siteMainHeader = document.querySelector('.trip-main');
 const siteMenu = siteMainHeader.querySelector('.trip-controls');
@@ -24,7 +37,8 @@ const filterPresenter = new FilterPresenter(siteFilter, filterModel, pointsModel
 filterPresenter.init();
 tripPresenter.init();
 
-document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+
+addButtonNewEvent.addEventListener('click', (evt) => {
   evt.preventDefault();
   tripPresenter._createNewEvent();
 });

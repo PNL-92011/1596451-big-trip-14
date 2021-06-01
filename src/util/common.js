@@ -1,16 +1,15 @@
-//import exports from "webpack";
+export const AUTHORIZATION = 'Basic 1577653oaheichyk';
+export const END_POINT = 'https://14.ecmascript.pages.academy/big-trip/';
 
 export const RenderPosition = {
   AFTERBEGIN: 'afterbegin',
   BEFOREEND: 'beforeend',
 };
 
-
 export const Mode = {
   DEFAULT: 'DEFAULT',
   EDITING: 'EDITING',
 };
-
 
 export const SortType = {
   DAY: 'sort-day-up',
@@ -35,3 +34,5 @@ export const FilterType = {
   FUTURE: 'future',
   PAST: 'past',
 };
+
+
