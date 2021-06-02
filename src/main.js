@@ -1,7 +1,6 @@
 //import { createMockPoints } from './mock/point.js';
 import { UpdateType } from './util/common.js';
 import TripPresenter from './presenter/trip.js';
-import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/point-model.js';
 import FilterModel from './model/filter-model.js';
 import Api from './api.js';

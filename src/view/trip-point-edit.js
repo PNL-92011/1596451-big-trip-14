@@ -213,7 +213,6 @@ export default class EditForm extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
-    //this.getElement().querySelector('.event__input--price').addEventListener('input', this._handlePriceChange);
   }
 
   setClickSaveHandler(callback) {
@@ -344,7 +343,6 @@ export default class EditForm extends SmartView {
       isDescription: Destinations[cityIndex].description.length !== 0,
     });
   }
-
 
   static parsePointToData(point) {
     return Object.assign(
