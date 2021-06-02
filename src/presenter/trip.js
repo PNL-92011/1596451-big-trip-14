@@ -15,7 +15,6 @@ import PointPresenter, {State as PointPresenterViewState} from './point.js';
 import NewEventPresenter from './new-event.js';
 
 
-
 export default class Trip {
   constructor(tripContainer, tripInfoContainer, tripFilterContainer, tripMenuContainer, pointsModel, filterModel, api) {
     this._pointsModel = pointsModel;
@@ -25,7 +24,7 @@ export default class Trip {
     this._tripFilterContainer = tripFilterContainer;
     this._tripMenuContainer = tripMenuContainer;
     this._isLoading = true;
-    this._api = api;         // ошибка: плохой запрос!
+    this._api = api;
 
     this._pointPresenter = {};
     this._currentSortType = SortType.DAY;
@@ -48,7 +47,6 @@ export default class Trip {
 
     this._newEventPresenter = new NewEventPresenter(this._pointsListComponent, this._handleViewAction);
   }
-
 
 
   init() {
@@ -163,7 +161,6 @@ export default class Trip {
       this._renderMessage();
       return;
     }
-    //this._tripInfoComponent.init(this._points());
     this._renderTripInfo();
     this._renderMenu();
     this._renderSort();
@@ -186,7 +183,6 @@ export default class Trip {
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
-        //this._pointsModel.updatePoint(updateType, update);
         this._pointPresenter[update.id].setViewState(PointPresenterViewState.SAVING);
 
         this._api.updatePoint(update)
@@ -199,7 +195,6 @@ export default class Trip {
         break;
 
       case UserAction.ADD_POINT:
-        //this._pointsModel.addPoint(updateType, update);
         this._api.addPoint(update)
           .then((response) => {
             this._pointsModel.addPoint(updateType, response);
@@ -210,7 +205,6 @@ export default class Trip {
         break;
 
       case UserAction.DELETE_POINT:
-        //this._pointsModel.deletePoint(updateType, update);
         this._pointPresenter[update.id].setViewState(PointPresenterViewState.DELETING);
 
         this._api.deletePoint(update)
@@ -236,7 +230,6 @@ export default class Trip {
         this._renderList();
         this._clearTripInfo();
         this._renderTripInfo();
-        //this._tripInfoComponent.init(this._getPoints());
         break;
       case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true});

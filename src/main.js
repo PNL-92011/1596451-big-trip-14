@@ -1,13 +1,10 @@
-//import { createMockPoints } from './mock/point.js';
 import { UpdateType } from './util/common.js';
 import TripPresenter from './presenter/trip.js';
+import FilterPresenter from './presenter/filter.js';
 import PointsModel from './model/point-model.js';
 import FilterModel from './model/filter-model.js';
 import Api from './api.js';
 
-
-//const TRIP_POINTS = 2;
-//export const tripPointsData = createMockPoints(TRIP_POINTS);
 
 const AUTHORIZATION = 'Basic polo944apolo8546wf';
 const END_POINT = 'https://14.ecmascript.pages.academy/big-trip';
@@ -19,8 +16,6 @@ const siteMenu = siteMainHeader.querySelector('.trip-controls');
 const siteFilter = siteMainHeader.querySelector('.trip-controls__filters');
 const siteEvents = document.querySelector('.trip-events');
 
-//pointsModel.setPoints(tripPointsData);
-/** пока не подключен сервер - записываем моковые данные */
 
 const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
