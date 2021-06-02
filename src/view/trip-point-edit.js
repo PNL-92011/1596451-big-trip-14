@@ -4,8 +4,8 @@ import { getArrayByType } from '../util/handle-functions.js';
 import SmartView from './smart.js';
 import { Destinations } from '../mock/point.js';
 import { nanoid } from 'nanoid';
-// import flatpickr from 'flatpickr';
-// import '../../node_modules/flatpickr/dist/flatpickr.min.css';
+import flatpickr from 'flatpickr';
+import '../../node_modules/flatpickr/dist/flatpickr.min.css';
 
 
 const BLANK_POINT = {
@@ -24,7 +24,6 @@ const BLANK_POINT = {
   price: '',
   isFavorite: false,
   id: '',
-
 };
 
 
@@ -179,24 +178,24 @@ export default class EditForm extends SmartView {
   constructor(point = BLANK_POINT) {
     super();
     this._data = EditForm.parsePointToData(point);
-    // this._datepickerStart = null;
-    // this._datepickerEnd = null;
+    this._datepickerStart = null;
+    this._datepickerEnd = null;
 
     this._handleEditClick = this._handleEditClick.bind(this);
     this._handleSaveClick = this._handleSaveClick.bind(this);
-    this._handleCancelClick = this._handleCancelClick.bind(this);
     this._handleDeleteClick = this._handleDeleteClick.bind(this);
 
     this._handleTypeChange = this._handleTypeChange.bind(this);
     this._handleCityChange = this._handleCityChange.bind(this);
     //this._handlePriceChange = this._handlePriceChange.bind(this);
+
     // this._handleOffersChange = this._handleOffersChange.bind(this);
-    // dateChange
-    // this._handleDateStartChange = this._handleDateStartChange.bind(this);
-    // this._handleDateEndChange = this._handleDateEndChange.bind(this);
+
+    this._handleDateStartChange = this._handleDateStartChange.bind(this);
+    this._handleDateEndChange = this._handleDateEndChange.bind(this);
 
     this._setInnerHandlers();
-    //this._setDatepicker();
+    this._setDatepicker();
   }
 
 
@@ -214,7 +213,6 @@ export default class EditForm extends SmartView {
   _setInnerHandlers() {
     this.getElement().querySelector('.event__type-group').addEventListener('change', this._handleTypeChange);
     this.getElement().querySelector('.event__input--destination').addEventListener('change', this._handleCityChange);
-    // this.getElement().querySelector('.event__input--price').addEventListener('input', this._handlePriceChange);
   }
 
   setClickSaveHandler(callback) {
@@ -227,56 +225,52 @@ export default class EditForm extends SmartView {
     this.getElement().querySelector('.event__rollup-btn').addEventListener('click', this._handleEditClick);
   }
 
-  setClickCancelHandler(callback) {
-    this._callback.cancelСlick = callback;
-    this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
-  }
+  // setClickCancelHandler(callback) {
+  //   this._callback.cancelСlick = callback;
+  //   this.getElement().querySelector('.event__reset-btn').addEventListener('click', this._handleCancelClick);
+  // }
 
   setClickDeleteHandler(callback) {
     this._callback.deleteClick = callback;
     this.getElement().querySelector('form').addEventListener('reset', this._handleDeleteClick);
   }
 
-  //уточнить: публичный или приватный ?
-  // clearDatepicker() {
-  //   if (this._datepickerStart) {
-  //     this._datepickerStart.destroy();
-  //     this._datepickerStart = null;
-  //   }
+  _clearDatepicker() {
+    if (this._datepickerStart) {
+      this._datepickerStart.destroy();
+      this._datepickerStart = null;
+    }
 
-  //   if (this._datepickerEnd) {
-  //     this._datepickerEnd.destroy();
-  //     this._datepickerEnd = null;
-  //   }
-  // }
+    if (this._datepickerEnd) {
+      this._datepickerEnd.destroy();
+      this._datepickerEnd = null;
+    }
+  }
 
-  // _setDatepicker() {
+  _setDatepicker() {
 
-  //   this.clearDatepicker();
+    this._clearDatepicker();
 
-  //   if (this._data.dateFrom) {
-  //     this._datepickerStart = flatpickr(this.getElement().querySelector('#event-start-time'),
-  //       {
-  //         dateFormat: 'd/m/Y H:i',
-  //         defaultDate: this._data.dateFrom,
-  //         onChange: this._handleDateStartChange,
-  //       });
-  //   }
+    if (this._data.dateFrom) {
+      this._datepickerStart = flatpickr(this.getElement().querySelector('[name=event-start-time]'),
+        {
+          dateFormat: 'd/m/Y H:i',
+          defaultDate: this._data.dateFrom,
+          onChange: this._handleDateStartChange,
+        });
+    }
 
 
-  //   if (this._data.dateTill) {
-  //     this._datepickerEnd = flatpickr(this.getElement().querySelector('#event-end-time'),
-  //       {
-  //         dateFormat: 'd/m/Y H:i',
-  //         defaultDate: this._data.dateTill,
-  //         onChange: this._handleDateEndChange,
-  //       });
-  //   }
-  // }
+    if (this._data.dateTill) {
+      this._datepickerEnd = flatpickr(this.getElement().querySelector('[name=event-end-time]'),
+        {
+          dateFormat: 'd/m/Y H:i',
+          defaultDate: this._data.dateTill,
+          onChange: this._handleDateEndChange,
+        });
+    }
+  }
 
-  // уточнить
-  // this._datepickerStart = flatpickr(this.getElement().querySelector('.event__input--time[name=event-start-time]'),
-  // this._datepickerEnd = flatpickr(this.getElement().querySelector('.event__input--time[name=event-end-time]'),
 
   restoreHandlers() {
     this._setInnerHandlers();
@@ -286,32 +280,32 @@ export default class EditForm extends SmartView {
     //this._setDatepicker();  // уточнить !!!
   }
 
-  // /** обработчик на изменение даты начала ТМ */
-  // _handleDateStartChange([userDate]) {
-  //   this.updateData({
-  //     dateFrom: userDate,
-  //   });
-  // }
+  /** обработчик на изменение даты начала ТМ */
+  _handleDateStartChange([userDate]) {
+    this.updateData({
+      dateFrom: userDate,
+    });
+  }
 
-  // /** обработчик на изменение даты окончания ТМ */
-  // _handleDateEndChange([userDate]) {
-  //   this.updateData({
-  //     dateTill: userDate,
-  //   });
-  // }
+  /** обработчик на изменение даты окончания ТМ */
+  _handleDateEndChange([userDate]) {
+    this.updateData({
+      dateTill: userDate,
+    });
+  }
 
+  /** обработчик на изменение цены */
+  _handleUpdatePrice(element) {
+    this.updateData({
+      price: parseInt(element.value),
+    });
+  }
 
   /** обработчик на Save */
   _handleSaveClick(evt) {
     evt.preventDefault();
     this._handleUpdatePrice(this.getElement().querySelector('.event__input--price'));
     this._callback.saveClick(EditForm.parsePointToData(this._data));
-  }
-
-  /** обработчик на Cancel */
-  _handleCancelClick(evt) {
-    evt.preventDefault();
-    this._callback.cancelСlick();
   }
 
   /** обработчик на Delete */
@@ -349,15 +343,6 @@ export default class EditForm extends SmartView {
       isDescription: Destinations[cityIndex].description.length !== 0,
     });
   }
-
-  /** обработчик на изменение цены */
-  _handleUpdatePrice(element) {
-    //evt.preventDefault();
-    this.updateData({
-      price: parseInt(element.value),
-    });
-  }
-
 
   static parsePointToData(point) {
     return Object.assign(

@@ -18,7 +18,12 @@ const siteEvents = document.querySelector('.trip-events');
 
 
 const tripPresenter = new TripPresenter(siteEvents, siteMainHeader, siteMenu, siteFilter, pointsModel, filterModel);
+const filterPresenter = new FilterPresenter(siteFilter, filterModel, pointsModel);
 
 tripPresenter.init();
 
+document.querySelector('.trip-main__event-add-btn').addEventListener('click', (evt) => {
+  evt.preventDefault();
+  tripPresenter._createNewEvent();
+});
 

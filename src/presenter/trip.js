@@ -3,12 +3,17 @@ import SortView from '../view/trip-sorting.js';
 import FilterView from '../view/trip-filters.js';
 import PointsListView from '../view/trip-point-list.js';
 import TripInfoView from '../view/trip-info.js';
-import NewPointView from '../view/trip-point-new.js';
+import NewEventView from '../view/trip-point-new.js';
+
 import { render, remove } from '../util/render.js';
 import { sortDay, sortTime, sortPrice, filter } from '../util/sort-functions.js';
-import { RenderPosition, SortType, UserAction, UpdateType } from '../util/common.js';
+
+import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '../util/common.js';
+
 import PointPresenter from './point.js';
-import FilterPresenter from './filter.js';
+import NewEventPresenter from './new-event.js';
+//import FilterPresenter from './filter.js';  // вернула filterPresenter в main
+
 
 
 export default class Trip {
@@ -26,11 +31,13 @@ export default class Trip {
     this._sortComponent = null;
     this._menuComponent = new MenuView();
     this._filterComponent = new FilterView();
-    this._newPointComponent = new NewPointView();
+
+    this._newEventComponent = new NewEventView();
     this._tripInfoComponent = new TripInfoView(this._getPoints());
     this._pointsListComponent = new PointsListView();
 
-    this._filterPresenter = new FilterPresenter(this._tripMenuContainer, this._pointsModel, this._filterModel);
+    //this._filterPresenter = new FilterPresenter(this._tripMenuContainer, this._pointsModel = pointsModel, this._filterModel = filterModel);
+
 
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
@@ -40,13 +47,22 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
+
+    this._newEventPresenter = new NewEventPresenter(this._pointsListComponent, this._handleViewAction);
   }
+
+
 
   init() {
     this._renderTrip();
-    this._filterPresenter.init();
-    //this._tripInfoComponent.init(this._getPoints());
-    //this._renderList();
+    //this._filterPresenter.init();  // вернула filterPresenter в main
+  }
+
+  _createNewEvent() {
+    this._currentSortType = SortType.DAY;
+    this._filterModel.setFilter(UpdateType.MAJOR, FilterType.EVERYTHING);
+    this._newEventPresenter.init();
+
   }
 
   _getPoints() {
@@ -76,7 +92,7 @@ export default class Trip {
   }
 
   _renderTripInfo() {
-    // при перерисовке нужно брать новые данные
+    /** при перерисовке нужно брать новые данные */
     this._tripInfoComponent.init(this._getPoints());
     render(this._tripInfoContainer, this._tripInfoComponent, RenderPosition.AFTERBEGIN);
   }
@@ -107,10 +123,11 @@ export default class Trip {
 
   _renderPoints() {
     const points = this._getPoints();
-    points.forEach((point) => this._renderPoint(point));      ////this._tripPointsData.forEach((point) => this._renderPoint(point));
+    points.forEach((point) => this._renderPoint(point));
   }
 
   _clearPoints() {
+    this._newEventPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((presenter) => presenter.destroy());
@@ -121,7 +138,7 @@ export default class Trip {
     this._clearPoints();
     remove(this._sortComponent);
     remove(this._tripInfoComponent);
-    remove(this._newPointComponent);
+    remove(this._newEventComponent);
 
     if (resetSortType) {
       this._currentSortType === SortType.DAY;
@@ -129,7 +146,7 @@ export default class Trip {
   }
 
   _renderMessage() {
-    render(this._tripContainer, this._newPointComponent, RenderPosition.BEFOREEND);
+    render(this._tripContainer, this._newEventComponent, RenderPosition.BEFOREEND);
   }
 
   _renderTrip() {
@@ -140,27 +157,23 @@ export default class Trip {
     //this._tripInfoComponent.init(this._points());
     this._renderTripInfo();
     this._renderMenu();
-    //this._renderFilter();
     this._renderSort();
     this._renderList();
   }
 
 
   _handleModeChange() {
+    this._newEventPresenter.destroy();
     Object
       .values(this._pointPresenter)
       .forEach((pointPresenter) => pointPresenter.resetView());
   }
 
-
-  ////  вызов обновления модели = обработка действий на представлении
-  ////  (здесь Презентер говорит Моделе, что нужно сделать)
+  // actionType - действие пользователя (изменение, добавление, удаление данных)
+  // updateType - тип изменений (для корректного (частичного или полного) обновления)
+  // update - обновленные данные
+  /** Презентер сообщает Моделе, что нужно сделать */
   _handleViewAction(actionType, updateType, update) {
-    //console.log(actionType, updateType, update);
-    // actionType - действие пользователя (изменение, добавление, удаление данных)
-    // updateType - тип изменений (для корректного (частичного или полного) обновления)
-    // update - обновленные данные
-
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         this._pointsModel.updatePoint(updateType, update); // Модель обновит ТМ и сообщит об этом Презентеру
@@ -174,32 +187,21 @@ export default class Trip {
     }
   }
 
-  //// отдаем модели
+  /** отдаем модели */
   _handleModelEvent(updateType, point) {
-    //console.log(updateType, point);
-    // В зависимости от типа изменений решаем, что делать:
-    // - обновить часть списка (например, когда поменялось описание)
-    // - обновить список (например, когда задача ушла в архив)
-    // - обновить всю доску (например, при переключении фильтра)
-
     switch (updateType) {
-      case UpdateType.PATCH:
-        // - обновление ТМ (например, пометить избранным)
-        //// Можно ли вместо this._pointPresenter[data.id].init(data); (из демо) применить renderPoint(data) ???
-        //this._renderPoint(data);
-        this._pointPresenter[point.id].init(point);
+      case UpdateType.PATCH:   // - обновление ТМ (например, пометить избранным)
+        this._pointPresenter[point.id].init(point); //this._renderPoint(data);  // ОШИБКА !!!
         break;
-      case UpdateType.MINOR:
-        // - обновление списка ТМ (при изменении данных внутри ТМ)
+      case UpdateType.MINOR:   // - обновление списка ТМ (при изменении данных внутри ТМ)
         this._clearTrip();
         this._renderSort();
         this._renderList();
-        this._clearTripInfo(); //  очистка TripInfo
+        this._clearTripInfo();  // очистка TripInfo перед перерисовкой
         this._renderTripInfo();
         //this._tripInfoComponent.init(this._getPoints());
         break;
-      case UpdateType.MAJOR:
-        // - обновление всего Trip (например, при переключении фильтра)
+      case UpdateType.MAJOR:    // - обновление всего Trip (например, при переключении фильтра)
         this._clearTrip({resetSortType: true});
         this._renderTrip();
         // добавить фильтрацию

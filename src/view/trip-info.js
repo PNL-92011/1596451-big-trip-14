@@ -84,6 +84,7 @@ export default class TripInfo extends AbstractView {
   init(points) {
     this._points = points;
   }
+
   getTemplate() {
     return createTripInfo(this._points);
   }
