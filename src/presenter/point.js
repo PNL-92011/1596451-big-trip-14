@@ -53,7 +53,7 @@ export default class Point {
     }
 
     if (this._mode === Mode.EDITING) {
-      // replace(this._pointEditComponent, prevPointEditComponent);
+      /** replace(this._pointEditComponent, prevPointEditComponent); */
       replace(this._pointComponent, prevPointEditComponent);
       this._mode = Mode.DEFAULT;
     }
@@ -126,7 +126,7 @@ export default class Point {
   _handleFavoriteClick() {
     this._changeData(
       UserAction.UPDATE_POINT,
-      //UpdateType.PATCH,
+      /** UpdateType.PATCH, */
       UpdateType.MINOR,
       Object.assign(
         {},
@@ -147,7 +147,7 @@ export default class Point {
     this._replaceEditFormToPoint();
   }
 
-  _handleFormSubmit(point) {      // Submit - пока только обновление ТМ (без добавления новых ТМ)
+  _handleFormSubmit(point) {
     this._changeData(
       UserAction.UPDATE_POINT,
       UpdateType.MINOR,

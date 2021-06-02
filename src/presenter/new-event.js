@@ -1,7 +1,6 @@
 import EditFormView from '../view/trip-point-edit.js';
 import { render, remove } from '../util/render.js';
 import { RenderPosition, UserAction, UpdateType } from '../util/common.js';
-//import {nanoid} from 'nanoid';
 
 
 const BLANK_POINT_NEW = {
@@ -80,9 +79,7 @@ export default class NewEvent {
       UserAction.ADD_POINT,
       UpdateType.MAJOR,
       point,
-      //Object.assign({id: nanoid()}, point),   // пока нет данных с сервера - используем nanoid
     );
-    //this.destroy();
   }
 
   _handleDeleteClick() {

@@ -24,14 +24,14 @@ export default class Points extends Observer {
       throw new Error('Can\'t update unexisting point');
     }
 
-    this._points = [                        // перезаписывает массив ТМ
+    this._points = [                        /** перезаписывает массив ТМ */
       ...this._points.slice(0, index),
       update,
       ...this._points.slice(index + 1),
     ];
 
-    this._notify(updateType, this._points); // здесь Модель сообщает Презентеру, что данные обновлены и их можно забрать =>
-  }                                         // =>  будет вызываться _handleModelEvent
+    this._notify(updateType, update);       /** здесь Модель сообщает Презентеру, что данные обновлены и их можно забрать => */
+  }                                         /** =>  будет вызываться _handleModelEvent */
 
 
   /** добавление ТМ */
@@ -41,7 +41,7 @@ export default class Points extends Observer {
       ...this._points,
     ];
 
-    this._notify(updateType, this._points);
+    this._notify(updateType, update);
   }
 
 
@@ -91,31 +91,20 @@ export default class Points extends Observer {
 
 
   static adaptToServer(point) {
-    const adaptedPoint = Object.assign(
-      {},
-      point,
+    return {
+      'base_price': point.price,
+      'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null,
+      'date_to': point.dateTill instanceof Date ? point.dateTill.toISOString() : null,
+      'is_favorite': point.isFavorite,
+      'destination':
       {
-        'base_price': point.price,
-        'date_from': point.dateFrom instanceof Date ? point.dateFrom.toISOString() : null, // как узнать, в какой формат переводить нашу дату?
-        'date_to': point.dateTill instanceof Date ? point.dateTill.toISOString() : null,
-        'is_favorite': point.isFavorite,
-        'destination':
-        {
-          'name': point.destination.city,
-          'picture': point.destination.photos,
-          'description': point.destination.description,
-        },
+        'name': point.destination.city,
+        'pictures': point.destination.photos,
+        'description': point.destination.description,
       },
-    );
-
-    delete adaptedPoint.basePrice;
-    delete adaptedPoint.dateFrom;
-    delete adaptedPoint.dateTill;
-    delete adaptedPoint.isFavorite;
-    delete adaptedPoint.destination.city;
-    delete adaptedPoint.destination.photos;
-
-    return adaptedPoint;
+      'offers': point.offers,
+      'type': point.type,
+    };
   }
 
 }

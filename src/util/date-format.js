@@ -25,24 +25,38 @@ const formatDateSlashTime = (date) => {
   return dayjs(date).format('DD/MM/YY HH:mm');
 };
 
-const calculateDuration = (start, end) => {
-  const quantityMinutes = dayjs(end).diff(dayjs(start), 'minute');
+const getDuration = (from, to) => {
+  const durationMinutes = dayjs(to).diff(dayjs(from), 'minute');
 
-  let minutes = (quantityMinutes > 60) ? (quantityMinutes % 60) : quantityMinutes;
-  let hours = Math.floor(quantityMinutes / 60);
+  return durationMinutes;
+};
 
-  if (minutes < 10) {
-    minutes = '0' + minutes;
+const calculateDuration = (durationMinutes) => {
+  if (durationMinutes < 60) {
+    const minutes = durationMinutes < 10 ? `0${durationMinutes}` : durationMinutes;
+    return `${minutes}M`;
   }
 
-  if (hours > 0) {
-    if (hours < 10) {
-      hours = '0' + hours;
-    }
+  else if (durationMinutes < 1440) {
+    const durationHours = Math.floor(durationMinutes / 60);
+    const minutesRest = durationMinutes % 60;
+
+    const hours = durationHours < 10 ? `0${durationHours}` : durationHours;
+    const minutes = minutesRest < 10 ? `0${minutesRest}` : minutesRest;
+
     return `${hours}H ${minutes}M`;
   }
-  return `${minutes}M`;
+
+  const durationDays = Math.floor(durationMinutes / (60 * 24));
+  const hoursRest = Math.floor((durationMinutes % (24 * 60)) / 60);
+  const minutesRest = (durationMinutes % (24 * 60)) % 60;
+
+  const days = durationDays < 10 ? `0${durationDays}` : durationDays;
+  const hours = hoursRest < 10 ? `0${hoursRest}` : hoursRest;
+  const minutes = minutesRest < 10 ? `0${minutesRest}` : minutesRest;
+
+  return `${days}D ${hours}H ${minutes}M`;
 };
 
 
-export { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration, formatDateSlashTime, formatDayMonth };
+export { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, getDuration, calculateDuration, formatDateSlashTime, formatDayMonth };

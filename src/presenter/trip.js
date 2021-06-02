@@ -12,7 +12,6 @@ import { RenderPosition, SortType, UserAction, UpdateType, FilterType } from '..
 
 import PointPresenter, {State as PointPresenterViewState} from './point.js';
 import NewEventPresenter from './new-event.js';
-//import FilterPresenter from './filter.js';  // вернула filterPresenter в main
 
 
 export default class Trip {
@@ -37,8 +36,6 @@ export default class Trip {
     this._pointsListComponent = new PointsListView();
     this._loadingComponent = new LoadingView();
 
-    //this._filterPresenter = new FilterPresenter(this._tripMenuContainer, this._pointsModel = pointsModel, this._filterModel = filterModel);
-
     this._handleViewAction = this._handleViewAction.bind(this);
     this._handleModelEvent = this._handleModelEvent.bind(this);
 
@@ -54,8 +51,6 @@ export default class Trip {
 
     this._pointsModel.addObserver(this._handleModelEvent);
     this._filterModel.addObserver(this._handleModelEvent);
-
-    //this._filterPresenter.init();  // вернула filterPresenter в main
   }
 
   _createNewEvent() {
@@ -176,20 +171,20 @@ export default class Trip {
       .forEach((pointPresenter) => pointPresenter.resetView());
   }
 
-  // actionType - действие пользователя (изменение, добавление, удаление данных)
-  // updateType - тип изменений (для корректного (частичного или полного) обновления)
-  // update - обновленные данные
   /** Презентер сообщает Моделе, что нужно сделать */
+  /** actionType - действие пользователя (изменение, добавление, удаление данных) */
+  /** updateType - тип изменений (для корректного (частичного или полного) обновления) */
+  /** update - обновленные данные */
+
   _handleViewAction(actionType, updateType, update) {
     switch (actionType) {
       case UserAction.UPDATE_POINT:
         //this._pointsModel.updatePoint(updateType, update);
-
         this._pointPresenter[update.id].setViewState(PointPresenterViewState.SAVING);
 
         this._api.updatePoint(update)
           .then((response) => {
-            this._pointsModel.updatePoint(updateType, response);     // ERROR : 400 (Bad Request) , 400: Bad Request
+            this._pointsModel.updatePoint(updateType, response);
           })
           .catch(() => {
             this._pointPresenter[update.id].setViewState(PointPresenterViewState.ABORTING);
@@ -199,7 +194,7 @@ export default class Trip {
       case UserAction.ADD_POINT:
         //this._pointsModel.addPoint(updateType, update);
         this._api.addPoint(update)
-          .then((response) => {                                     // ERROR : this._api.addPoint is not a function
+          .then((response) => {
             this._pointsModel.addPoint(updateType, response);
           })
           .catch(() => {
@@ -209,7 +204,6 @@ export default class Trip {
 
       case UserAction.DELETE_POINT:
         //this._pointsModel.deletePoint(updateType, update);
-
         this._pointPresenter[update.id].setViewState(PointPresenterViewState.DELETING);
 
         this._api.deletePoint(update)
@@ -226,17 +220,17 @@ export default class Trip {
   /** отдаем модели */
   _handleModelEvent(updateType, point) {
     switch (updateType) {
-      case UpdateType.PATCH:   // - обновление ТМ (например, пометить избранным)
-        this._pointPresenter[point.id].init(point); //this._renderPoint(data);  // ОШИБКА !!!
+      case UpdateType.PATCH:
+        this._pointPresenter[point.id].init(point);
         break;
-      case UpdateType.MINOR:   // - обновление списка ТМ (при изменении данных внутри ТМ)
+      case UpdateType.MINOR:
         this._clearTrip();
         this._renderSort();
         this._renderList();
-        this._clearTripInfo();  // очистка TripInfo перед перерисовкой
+        this._clearTripInfo();
         this._renderTripInfo();
         break;
-      case UpdateType.MAJOR:    // - обновление всего Trip (например, при переключении фильтра)
+      case UpdateType.MAJOR:
         this._clearTrip({resetSortType: true});
         this._renderTrip();
         break;
@@ -255,9 +249,8 @@ export default class Trip {
       return;
     }
 
-    this._currentSortType = sortType;   /** сортировка ТМ */          ////this._sortPoints(sortType);
-    this._clearTrip();                  /** очистка ТМ */             ////this._clearPoints();
-    //this._renderPoints();             /** отрисовка ТМ заново */
+    this._currentSortType = sortType;
+    this._clearTrip();
     this._renderTrip();
   }
 }

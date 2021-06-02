@@ -1,4 +1,4 @@
-import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, calculateDuration } from '../util/date-format.js';
+import { formatDateOnly, formatTimeOnly, formatShortDate, formatFullDate, getDuration, calculateDuration } from '../util/date-format.js';
 import AbstractView from './abstract.js';
 
 
@@ -31,7 +31,7 @@ const createTripPoint = (points) => {
         &mdash;
         <time class="event__end-time" datetime="${formatFullDate(dateTill)}">${formatTimeOnly(dateTill)}</time>
       </p>
-      <p class="event__duration">${calculateDuration(dateFrom, dateTill)}</p>
+      <p class="event__duration">${calculateDuration(getDuration(dateFrom, dateTill))}</p>
     </div>
 
     <p class="event__price">

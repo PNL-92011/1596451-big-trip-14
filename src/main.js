@@ -20,7 +20,10 @@ const siteMenu = siteMainHeader.querySelector('.trip-controls');
 const siteFilter = siteMainHeader.querySelector('.trip-controls__filters');
 const siteEvents = document.querySelector('.trip-events');
 
-const pointsModel = new PointsModel();  //pointsModel.setPoints(tripPointsData);  /** пока не подключен сервер - записываем моковые данные */
+//pointsModel.setPoints(tripPointsData);
+/** пока не подключен сервер - записываем моковые данные */
+
+const pointsModel = new PointsModel();
 const filterModel = new FilterModel();
 
 const filterPresenter = new FilterPresenter(siteFilter, filterModel, pointsModel);
@@ -43,14 +46,4 @@ api.getPoints()
     pointsModel.setPoints(UpdateType.INIT, []);
   });
 
-
-// Promise.all([
-//   api.getPoints(),
-// ])
-//   .then((points) => {
-//     pointsModel.setPoints(UpdateType.INIT, points);
-//   })
-//   .catch(() => {
-//     pointsModel.setPoints(UpdateType.INIT, []);
-//   });
 

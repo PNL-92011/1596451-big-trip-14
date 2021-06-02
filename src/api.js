@@ -37,7 +37,7 @@ export default class Api {
       .then(PointsModel.adaptToClient);
   }
 
-  addTask(point) {
+  addPoint(point) {
     return this._load({
       url: 'points',
       method: Method.POST,

@@ -19,18 +19,22 @@ export const sortTime = (A, B) => dayjs(dayjs(B.dateTill).diff(dayjs(B.dateFrom)
 export const sortPrice = (A, B) => B.price - A.price;
 
 
+/** Функции проверки даты */
 const isFutureDate = (point) => {
   return dayjs(point.dateTill).isAfter(dayjs(), 'day')
   || dayjs(point.dateFrom).isBefore(dayjs(), 'day')
   && dayjs(point.dateTill).isAfter(dayjs(), 'day');
 };
 
+
+/** Функции проверки даты */
 const isPastDate = (point) => {
   return dayjs(point.dateFrom).isBefore(dayjs(), 'day')
   || dayjs(point.dateFrom) === dayjs()
   || dayjs(point.dateFrom).isBefore(dayjs(), 'day')
   && dayjs(point.dateTo).isAfter(dayjs(), 'day');
 };
+
 
 export const filter = {
   [FilterType.EVERYTHING]: (points) => points.slice(),

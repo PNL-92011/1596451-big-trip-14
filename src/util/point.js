@@ -74,6 +74,5 @@ const GROUP_OFFERS = {
   sightseeing: [ OFFERS.tickets, OFFERS.seats ],
   restaurant: [ OFFERS.comfort ],
 };
-// уточнить про check-in
 
 export { TYPES, OFFERS, GROUP_OFFERS };
